@@ -6,6 +6,12 @@ import ExpandableGallery from './components/ui/gallery-animation'
 import PipVideoPlayer from './components/ui/pip-video-player'
 
 const TICKETS = 'https://www.sympla.com.br/evento/a-l-m-a-reveillon-2027-boipeba/3254347?referrer=www.google.com'
+const trackTicketClick = (placement: string) => {
+  const fbq = (window as Window & { fbq?: (...args: unknown[]) => void }).fbq
+  fbq?.('track', 'InitiateCheckout', { content_name: 'ALMA Réveillon 2027', content_category: 'ingresso', placement }, { eventID: `alma-ticket-${placement}-${Date.now()}` })
+  const dataLayer = (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer || ((window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer = [])
+  dataLayer.push({ event: 'ticket_click', placement, content_name: 'ALMA Réveillon 2027' })
+}
 const INSTAGRAM = 'https://www.instagram.com/almareveillonboipeba/'
 const nights = [
   ['27.12', 'Roda de Praia', '+5521'],
@@ -81,7 +87,7 @@ function App() {
         <div className="social-links" aria-label="Rede social do ALMA">
           <a href={INSTAGRAM} target="_blank" rel="noreferrer" aria-label="ALMA Réveillon no Instagram"><FaInstagram size={17}/></a>
         </div>
-        <a className="ticket ticket-small" href={TICKETS} target="_blank" rel="noreferrer"><span className="ticket-label">Ingressos</span> <ArrowRight size={15}/></a>
+        <a className="ticket ticket-small" href={TICKETS} onClick={() => trackTicketClick('nav')} target="_blank" rel="noreferrer"><span className="ticket-label">Ingressos</span> <ArrowRight size={15}/></a>
       </div>
       <button className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menu"><Menu /></button>
     </header>
@@ -90,7 +96,7 @@ function App() {
       <button onClick={() => setMenuOpen(false)} aria-label="Fechar menu"><X /></button>
       {['experiencia','programacao','ilha'].map(x => <a key={x} href={`#${x}`} onClick={() => setMenuOpen(false)}>{x}</a>)}
       <div className="mobile-socials"><a href={INSTAGRAM} target="_blank" rel="noreferrer" aria-label="Instagram"><FaInstagram/></a></div>
-      <a href={TICKETS} target="_blank" rel="noreferrer">Comprar ingresso</a>
+      <a href={TICKETS} onClick={() => trackTicketClick('cta')} target="_blank" rel="noreferrer">Comprar ingresso</a>
     </motion.div>}
 
     <section className="hero" id="top" ref={heroRef}>
@@ -155,10 +161,10 @@ function App() {
 
     <section className="finale">
       <div className="finale-bg" />
-      <Reveal className="finale-copy"><span className="kicker">HAPPY NEW ILHA</span><h2>Seu próximo ano<br/>pode começar aqui.</h2><p>Praia da Cueira · Cairu, Bahia<br/>27 de dezembro, 23h — 1º de janeiro, 6h</p><a className="ticket light-ticket" href={TICKETS} target="_blank" rel="noreferrer"><span className="ticket-label">Comprar no Sympla</span> <ArrowRight size={18}/></a><small>Evento para maiores de 18 anos. Compra e regras pela plataforma oficial.</small></Reveal>
+      <Reveal className="finale-copy"><span className="kicker">HAPPY NEW ILHA</span><h2>Seu próximo ano<br/>pode começar aqui.</h2><p>Praia da Cueira · Cairu, Bahia<br/>27 de dezembro, 23h — 1º de janeiro, 6h</p><a className="ticket light-ticket" href={TICKETS} onClick={() => trackTicketClick('finale')} target="_blank" rel="noreferrer"><span className="ticket-label">Comprar no Sympla</span> <ArrowRight size={18}/></a><small>Evento para maiores de 18 anos. Compra e regras pela plataforma oficial.</small></Reveal>
     </section>
 
-    <footer><a className="wordmark" href="#top"><img src="/brand/alma-logo-trimmed.png" alt="ALMA Réveillon 2027"/></a><p>RÉVEILLON 2027 · BOIPEBA</p><div className="footer-actions"><div className="social-links social-links--footer"><a href={INSTAGRAM} target="_blank" rel="noreferrer" aria-label="Instagram"><FaInstagram size={18}/></a></div><a href={TICKETS} target="_blank" rel="noreferrer"><img className="sympla" src="/brand/sympla-logo.png" alt="Comprar pela Sympla"/></a></div></footer>
+    <footer><a className="wordmark" href="#top"><img src="/brand/alma-logo-trimmed.png" alt="ALMA Réveillon 2027"/></a><p>RÉVEILLON 2027 · BOIPEBA</p><div className="footer-actions"><div className="social-links social-links--footer"><a href={INSTAGRAM} target="_blank" rel="noreferrer" aria-label="Instagram"><FaInstagram size={18}/></a></div><a href={TICKETS} onClick={() => trackTicketClick('cta')} target="_blank" rel="noreferrer"><img className="sympla" src="/brand/sympla-logo.png" alt="Comprar pela Sympla"/></a></div></footer>
 
     <PipVideoPlayer />
   </main>
