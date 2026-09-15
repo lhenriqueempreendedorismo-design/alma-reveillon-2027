@@ -52,7 +52,70 @@ function SqueezeCarousel() {
   </section>
 }
 
+const menuItems = [
+  ['experiencia', 'Experiência'], ['programacao', 'Programação'], ['ilha', 'Boipeba'],
+  ['/como-chegar', 'Como chegar'], ['/onde-ficar', 'Onde ficar'], ['/sustentabilidade', 'Sustentabilidade'],
+  ['/historias', 'Histórias'], ['/faq', 'FAQ'],
+]
+
+const pageContent: Record<string, { kicker: string; title: React.ReactNode; intro: string; blocks: Array<[string, string]> }> = {
+  '/como-chegar': {
+    kicker: 'CHEGANDO AO PARAÍSO', title: <>O caminho<br/><em>também é ALMA.</em></>,
+    intro: 'Boipeba começa antes da ilha: o deslocamento desacelera a cidade e prepara o corpo para os dias à beira-mar.',
+    blocks: [
+      ['Saindo de Salvador', 'Voo comercial · 35 min\nTransfer marítimo · 2h\nTransfer semi-terrestre · 5h\nTravessia convencional · 4h30\nTravessia ferry boat · 5h'],
+      ['Translado e passeios locais', 'O destaque oficial recomenda organizar o translado e os passeios com antecedência. Entre as referências apresentadas estão @agenciadantour, @bahia_terra_turismo, @boipebabeach_cocoluco, @lanchaliberdade_ e @martourboipeba.'],
+      ['Antes de sair', 'Confirme horários, maré, ponto de embarque e disponibilidade diretamente com o fornecedor escolhido. As opções podem variar conforme a data e as condições de navegação.'],
+    ],
+  },
+  '/onde-ficar': {
+    kicker: 'A ILHA PEDE TEMPO', title: <>Fique perto<br/><em>do seu ritmo.</em></>,
+    intro: 'Hospedar-se em Boipeba é parte da experiência: escolha a região pensando no acesso à praia, na distância do festival e no tempo que você quer viver fora da pista.',
+    blocks: [
+      ['Reserve cedo', 'O Réveillon acontece em uma ilha com oferta limitada de hospedagem. Consulte pousadas e casas locais com antecedência e confirme política de check-in, transporte de bagagem e distância do cais.'],
+      ['Escolha com calma', 'Compare localização, acesso, café da manhã, ar-condicionado, gerador e formas de chegada. Em Boipeba, a logística faz parte da viagem — não deixe para resolver na última hora.'],
+      ['Uma base para cinco noites', 'O festival ocupa cinco noites, de 27 a 31 de dezembro. Uma hospedagem bem localizada permite alternar praia, mata, descanso e festa sem transformar a ilha em uma corrida.'],
+    ],
+  },
+  '/sustentabilidade': {
+    kicker: 'UMA FESTA QUE DEVOLVE', title: <>Cuidar da ilha<br/><em>faz parte.</em></>,
+    intro: 'O ALMA foi pensado para celebrar a paisagem sem ignorar o território que recebe o festival.',
+    blocks: [
+      ['Impacto local', 'Mais de R$ 200 mil são investidos por edição em ações de inclusão e na criação de postos de trabalho, beneficiando direta e indiretamente mais de 1.000 nativos, autônomos e empreendedores locais.'],
+      ['Menos resíduos', 'Um copo retornável e uma pulseira por cliente para os cinco dias, coleta seletiva, doação de 100% das latinhas para reciclagem e limpeza da praia depois do evento.'],
+      ['Estrutura consciente', 'Banheiros ecológicos com compostagem, materiais nativos legalizados e reutilizáveis, geradores próprios e compra de materiais de compensação ambiental definidos pela Secretaria do Meio Ambiente de Cairu.'],
+    ],
+  },
+  '/historias': {
+    kicker: 'O QUE FICA DEPOIS', title: <>Cinco noites.<br/><em>Uma memória inteira.</em></>,
+    intro: 'Antes de falar da próxima virada, vale lembrar o que faz o ALMA permanecer: a ilha, as pessoas e a sensação de ter encontrado um lugar raro.',
+    blocks: [
+      ['Uma história que retorna', 'O festival reúne cinco edições realizadas — 2016, 2017, 2018, 2019 e o retorno em 2023 — e volta a Boipeba para a virada de 2026 para 2027.'],
+      ['Boi People', 'Um público de 25 a 32 anos, majoritariamente das classes A e AA, chega de diferentes lugares do Brasil e do exterior em busca de novos ares, pé na areia e uma experiência fora do óbvio.'],
+      ['Não é só uma festa', 'É o caminho pelo mar, a praia durante o dia, a música atravessando a madrugada e a virada diante da paisagem da Praia da Cueira.'],
+    ],
+  },
+  '/faq': {
+    kicker: 'ANTES DE IR', title: <>Tudo o que<br/><em>você precisa saber.</em></>,
+    intro: 'Informações essenciais para planejar a chegada, a hospedagem e os cinco dias do ALMA.',
+    blocks: faqs.map(([q, a]) => [q, a]),
+  },
+}
+
+function InternalPage({ path }: { path: string }) {
+  const page = pageContent[path] || pageContent['/faq']
+  return <main className="internal-page">
+    <header className="internal-nav"><a className="wordmark" href="/"><img src="/brand/alma-logo-trimmed.png" alt="ALMA Réveillon 2027"/></a><a className="ticket ticket-small" href={TICKETS} target="_blank" rel="noreferrer" onClick={() => trackTicketClick('internal-nav')}>Ingressos <ArrowRight size={15}/></a></header>
+    <section className="internal-hero"><span className="kicker">{page.kicker}</span><h1>{page.title}</h1><p>{page.intro}</p></section>
+    <section className="internal-grid">{page.blocks.map(([title, text], i) => <article key={title}><span>0{i + 1}</span><h2>{title}</h2><p>{text}</p></article>)}</section>
+    <section className="internal-cta"><span className="kicker">ALMA RÉVEILLON 2027</span><h2>Seu próximo ano<br/><em>pode começar aqui.</em></h2><a className="ticket" href={TICKETS} target="_blank" rel="noreferrer" onClick={() => trackTicketClick('internal-cta')}>Comprar no Sympla <ArrowRight size={18}/></a></section>
+    <footer><a className="wordmark" href="/"><img src="/brand/alma-logo-trimmed.png" alt="ALMA Réveillon 2027"/></a><p>RÉVEILLON 2027 · BOIPEBA</p></footer>
+  </main>
+}
+
 function App() {
+  const path = window.location.pathname.replace(/\/$/, '') || '/'
+  if (path !== '/') return <InternalPage path={path} />
   const [menuOpen, setMenuOpen] = useState(false)
   const [dockTop, setDockTop] = useState(false)
   const [logoLight, setLogoLight] = useState(false)
@@ -82,7 +145,7 @@ function App() {
       <a className="wordmark" href="#top" aria-label="ALMA, início"><img src="/brand/alma-logo-trimmed.png" alt="ALMA Réveillon 2027"/></a>
       <div className={`nav-dock ${dockTop ? 'nav-dock--top' : ''}`}>
         <nav className="nav-links" aria-label="Navegação principal">
-          <a href="#experiencia">Experiência</a><a href="#programacao">Programação</a><a href="#ilha">Boipeba</a>
+          {menuItems.slice(0, 3).map(([href, label]) => <a key={href} href={href.startsWith('/') ? href : `#${href}`}>{label}</a>)}
         </nav>
         <div className="social-links" aria-label="Rede social do ALMA">
           <a href={INSTAGRAM} target="_blank" rel="noreferrer" aria-label="ALMA Réveillon no Instagram"><FaInstagram size={17}/></a>
@@ -94,7 +157,7 @@ function App() {
 
     {menuOpen && <motion.div className="mobile-menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <button onClick={() => setMenuOpen(false)} aria-label="Fechar menu"><X /></button>
-      {['experiencia','programacao','ilha'].map(x => <a key={x} href={`#${x}`} onClick={() => setMenuOpen(false)}>{x}</a>)}
+      {menuItems.map(([href, label]) => <a key={href} href={href.startsWith('/') ? href : `#${href}`} onClick={() => setMenuOpen(false)}>{label}</a>)}
       <div className="mobile-socials"><a href={INSTAGRAM} target="_blank" rel="noreferrer" aria-label="Instagram"><FaInstagram/></a></div>
       <a href={TICKETS} onClick={() => trackTicketClick('cta')} target="_blank" rel="noreferrer">Comprar ingresso</a>
     </motion.div>}
