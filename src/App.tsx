@@ -163,8 +163,8 @@ function App() {
     </motion.div>}
 
     <section className="hero" id="top" ref={heroRef}>
-      <video autoPlay muted loop playsInline preload="auto" poster="/media/alma-hero-poster.jpg" aria-label="Paisagens de Boipeba entre nuvens ensolaradas">
-        <source src="/media/alma-hero-web.mp4" type="video/mp4" />
+      <video autoPlay muted loop playsInline preload="auto" poster="/media/alma-aftermovie-25-poster.jpg" aria-label="Aftermovie do ALMA Réveillon em Boipeba">
+        <source src="/media/alma-aftermovie-25.mp4" type="video/mp4" />
       </video>
       <motion.div className="cloud cloud-a" style={{ y: cloudY }}/><motion.div className="cloud cloud-b" style={{ y: cloudY }}/>
       <div className="hero-wash" />
