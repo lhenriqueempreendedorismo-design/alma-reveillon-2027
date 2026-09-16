@@ -1,4 +1,4 @@
-@font-face{font-family:Tusker;src:url('/alma-reveillon-lp/fonts/TuskerGrotesk-3500Medium.woff2') format('woff2');font-display:swap;font-weight:500}
+@font-face{font-family:Tusker;src:url('/fonts/TuskerGrotesk-3500Medium.woff2') format('woff2');font-display:swap;font-weight:500}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;background:#f4fbfd;max-width:100%;overflow-x:clip}
 body{margin:0;width:100%;max-width:100%;overflow-x:clip;color:#143847;background:#f4fbfd;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
@@ -167,7 +167,7 @@ em{font-style:normal;color:#2b829d}
 .manifesto-grid p{text-wrap:balance;max-width:46ch}
 
 .cinema{height:110vh;min-height:720px;position:relative;display:flex;align-items:center;color:#f7f3e9;overflow:hidden}
-.cinema-bg{position:absolute;inset:-5%;background:url('/alma-reveillon-lp/media/curadoria/paraiso-fullscreen.webp') center/cover no-repeat;filter:brightness(.63) saturate(.9);transform:scale(1.05)}
+.cinema-bg{position:absolute;inset:-5%;background:url('/media/curadoria/paraiso-fullscreen.webp') center/cover no-repeat;filter:brightness(.63) saturate(.9);transform:scale(1.05)}
 .cinema-copy{position:relative;z-index:2;margin-left:auto;width:min(600px,80vw);margin-right:7vw}
 .cinema h2{font-size:clamp(4rem,7.4vw,7.8rem);text-wrap:balance}
 .cinema p{font-size:1.15rem;line-height:1.68;max-width:44ch;text-wrap:balance}
@@ -643,7 +643,7 @@ em{font-style:normal;color:#2b829d}
 @keyframes float{50%{transform:translateY(-16px)}}
 
 .finale{height:105vh;min-height:720px;position:relative;color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding-bottom:80px}
-.finale-bg{position:absolute;inset:0;background:linear-gradient(rgba(7,44,60,.2),rgba(7,44,60,.55)),url('/alma-reveillon-lp/media/curadoria/cta-por-do-sol.webp') center 50%/cover no-repeat;filter:saturate(.8)}
+.finale-bg{position:absolute;inset:0;background:linear-gradient(rgba(7,44,60,.2),rgba(7,44,60,.55)),url('/media/curadoria/cta-por-do-sol.webp') center 50%/cover no-repeat;filter:saturate(.8)}
 .finale-copy{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
 .finale h2{font-size:clamp(3.6rem,6.2vw,6.7rem);text-wrap:balance}
 .finale p{line-height:1.7;text-wrap:balance;max-width:48ch;margin:0 auto}
@@ -1012,7 +1012,7 @@ em{font-style:normal;color:#2b829d}
   top:50%;left:50%;
   width:85vmax;height:85vmax;
   transform:translate(-50%,-50%) rotate(-8deg);
-  background:url('/alma-reveillon-lp/brand/alma-favicon.png') center/contain no-repeat;
+  background:url('/brand/alma-favicon.png') center/contain no-repeat;
   opacity:.06;
   pointer-events:none;
   z-index:1;
