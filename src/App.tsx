@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion, useReducedMotion, useScroll, useSpring, useTransform, AnimatePresence } from 'motion/react'
-import { ArrowDown, ArrowRight, ArrowUp } from 'lucide-react'
+import { ArrowDown, ArrowRight, ArrowUp, Star } from 'lucide-react'
 import ExpandableGallery from './components/ui/gallery-animation'
 import StackedGallery from './components/ui/stacked-gallery'
 import PipVideoPlayer from './components/ui/pip-video-player'
@@ -11,7 +11,7 @@ import HoverFooter from './components/ui/hover-footer'
 import CircularMenu from './components/ui/circular-menu'
 import AccommodationSection from './AccommodationSection'
 import ImportantNotices from './ImportantNotices'
-import Subpage, { type SubpageKey } from './Subpages'
+import Subpage, { reviews, type SubpageKey } from './Subpages'
 import { LanguageProvider, useLanguage } from './i18n/LanguageContext'
 import { trackTicketClick, TICKETS_URL } from './lib/tracking'
 
@@ -240,19 +240,16 @@ function AppContent() {
       <section className="stories light" id="historias">
         <Reveal>
           <span className="kicker">{t.stories.kicker}</span>
-          <h2>{t.stories.h2Part1}<br/><em>{t.stories.h2Part2}</em></h2>
+          <h2>O que fica depois<br/><em>da virada.</em></h2>
+          <p className="stories-intro">Algumas mensagens ficam. Reunimos comentários publicados por quem viveu o ALMA.</p>
         </Reveal>
-        <div className="story-grid">
-          {t.stories.cards.map((card, idx) => (
-            <Reveal className="story-card" key={card.tag} delay={idx * .1}>
-              <div className="story-card__top">
-                <span className="story-card__tag">{card.tag}</span>
-              </div>
-              <div className="story-card__content">
-                <h3>{card.title}</h3>
-                <p>{card.p}</p>
-              </div>
-            </Reveal>
+        <div className="review-carousel" aria-label="Reviews de quem viveu o ALMA">
+          {reviews.map((review) => (
+            <article className="review-carousel-card" key={`${review.author}-${review.quote}`}>
+              <Star size={16} aria-hidden="true" />
+              <blockquote>“{review.quote}”</blockquote>
+              <span>@{review.author}</span>
+            </article>
           ))}
         </div>
       </section>
@@ -343,7 +340,7 @@ function AppContent() {
 function RoutedApp() {
   const pathname = window.location.pathname.replace(/\/$/, '') || '/'
   const subpage = pathname.slice(1) as SubpageKey
-  const validSubpages: SubpageKey[] = ['como-chegar', 'onde-ficar', 'programacao', 'experiencia', 'historias']
+  const validSubpages: SubpageKey[] = ['como-chegar', 'onde-ficar', 'programacao', 'experiencia']
   return pathname !== '/' && validSubpages.includes(subpage) ? <Subpage path={subpage} /> : <AppContent />
 }
 

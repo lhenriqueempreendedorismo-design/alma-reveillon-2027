@@ -1,11 +1,12 @@
 import { ArrowLeft, ArrowRight, Clock3, MapPin, Plane, Ship, Star } from 'lucide-react'
+import CircularMenu from './components/ui/circular-menu'
 import { accommodations } from './data/accommodations'
 
-export type SubpageKey = 'como-chegar' | 'onde-ficar' | 'programacao' | 'experiencia' | 'historias'
+export type SubpageKey = 'como-chegar' | 'onde-ficar' | 'programacao' | 'experiencia'
 
 const asset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
 
-const reviews = [
+export const reviews = [
   { quote: 'Energia surreal!!! Foi maravilhoso e perfeito cada momento 🤍', author: 'polly.penoni' },
   { quote: 'O MELHOR EVENTO DO NORDESTE', author: 'ricardobrautigam' },
   { quote: 'Saudade desses dias já! 😢 foi incrível!! 🔥', author: 'lilotune' },
@@ -29,10 +30,13 @@ const nights = [
 function Shell({ eyebrow, title, children }: { eyebrow: string; title: string; children: React.ReactNode }) {
   return (
     <main className="alma-subpage">
-      <header className="alma-subpage-nav">
-        <a href="/" className="alma-subpage-back"><ArrowLeft size={16} /> Voltar para a home</a>
-        <img src={asset('/brand/alma-logo-dark.png')} alt="ALMA Réveillon" />
-        <a className="alma-subpage-ticket" href="https://www.sympla.com.br/evento/a-l-m-a-reveillon-2027-boipeba/3254347" target="_blank" rel="noreferrer">Ingressos <ArrowRight size={15} /></a>
+      <header className="nav nav--hero alma-subpage-nav">
+        <a href="/" className="alma-subpage-back" aria-label="Voltar para a home"><ArrowLeft size={20} /></a>
+        <a className="wordmark wordmark--hero" href="/" aria-label="ALMA Réveillon 2027">
+          <img className="wordmark-layer wordmark-layer--dark" src={asset('/brand/alma-logo-dark.png')} alt="ALMA Réveillon 2027" />
+          <img className="wordmark-layer wordmark-layer--diff" src={asset('/brand/alma-logo-trimmed.png')} alt="ALMA Réveillon 2027" />
+        </a>
+        <CircularMenu />
       </header>
       <section className="alma-subpage-hero">
         <span>{eyebrow}</span>
@@ -94,6 +98,5 @@ export default function Subpage({ path }: { path: SubpageKey }) {
   if (path === 'como-chegar') return <HowToArrivePage />
   if (path === 'onde-ficar') return <WhereToStayPage />
   if (path === 'programacao') return <ProgramPage />
-  if (path === 'experiencia') return <ExperiencePage />
-  return <StoriesPage />
+  return <ExperiencePage />
 }
