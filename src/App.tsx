@@ -12,6 +12,7 @@ import CircularMenu from './components/ui/circular-menu'
 import AccommodationSection from './AccommodationSection'
 import ImportantNotices from './ImportantNotices'
 import Subpage, { reviews, type SubpageKey } from './Subpages'
+import ReviewCarousel from './components/ui/review-carousel'
 import { LanguageProvider, useLanguage } from './i18n/LanguageContext'
 import { trackTicketClick, TICKETS_URL } from './lib/tracking'
 
@@ -238,20 +239,19 @@ function AppContent() {
       <AccommodationSection ticketsUrl={LODGING_TICKETS_URL} />
 
       <section className="stories light" id="historias">
-        <Reveal>
-          <span className="kicker">{t.stories.kicker}</span>
-          <h2>O que fica depois<br/><em>da virada.</em></h2>
-          <p className="stories-intro">Algumas mensagens ficam. Reunimos comentários publicados por quem viveu o ALMA.</p>
-        </Reveal>
-        <div className="review-carousel" aria-label="Reviews de quem viveu o ALMA">
-          {reviews.map((review) => (
-            <article className="review-carousel-card" key={`${review.author}-${review.quote}`}>
-              <Star size={16} aria-hidden="true" />
-              <blockquote>“{review.quote}”</blockquote>
-              <span>@{review.author}</span>
-            </article>
-          ))}
-        </div>
+        <ReviewCarousel
+          items={reviews}
+          kicker={t.stories.kicker}
+          titlePart1={t.stories.h2Part1}
+          titlePart2={t.stories.h2Part2}
+          intro={
+            language === 'en'
+              ? 'Some messages stay forever. Stories and impressions from those who lived the ALMA atmosphere.'
+              : language === 'es'
+              ? 'Algunos mensajes perduran. Historias e impresiones de quienes vivieron la atmósfera de ALMA.'
+              : 'Algumas mensagens ficam. Histórias e momentos de quem viveu a energia do ALMA na Praia da Cueira.'
+          }
+        />
       </section>
 
       <ImportantNotices ticketsUrl={TICKETS} instagramUrl={INSTAGRAM} />
