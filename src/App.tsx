@@ -102,11 +102,20 @@ const pageContent: Record<string, { kicker: string; title: React.ReactNode; intr
   },
 }
 
+const accommodationCards = [
+  ['Pedra de Sal', '/media/hospedagem/pedra-de-sal.png', 'Hospedagem em Boipeba apresentada no material do ALMA. Consulte disponibilidade, valores e condições diretamente com a pousada.'],
+  ['Pousada da Vila', '/media/hospedagem/pousada-da-vila.png', 'Uma base charmosa para viver a ilha entre a praia, o centro e as noites do festival. Confirme localização e logística antes da reserva.'],
+  ['Vila Jesuíta', '/media/hospedagem/vila-jesuita.png', 'Quartos claros e acolhedores para desacelerar entre um dia de praia e outro. Consulte as condições para o período do Réveillon.'],
+  ['Maravilha', '/media/hospedagem/maravilha.png', 'Uma opção de hospedagem da curadoria local. Verifique datas, quantidade de hóspedes e serviços diretamente com o estabelecimento.'],
+  ['Caminho das Pedras', '/media/hospedagem/caminho-das-pedras.png', 'Hospedagem apresentada no acervo de Boipeba. Confirme acesso, distância do cais e disponibilidade para 27–31 de dezembro.'],
+]
+
 function InternalPage({ path }: { path: string }) {
   const page = pageContent[path] || pageContent['/faq']
   return <main className="internal-page">
     <header className="internal-nav"><a className="wordmark" href="/"><img src="/brand/alma-logo-trimmed.png" alt="ALMA Réveillon 2027"/></a><a className="ticket ticket-small" href={TICKETS} target="_blank" rel="noreferrer" onClick={() => trackTicketClick('internal-nav')}>Ingressos <ArrowRight size={15}/></a></header>
     <section className="internal-hero"><span className="kicker">{page.kicker}</span><h1>{page.title}</h1><p>{page.intro}</p></section>
+    {path === '/onde-ficar' && <section className="accommodation-grid" aria-label="Hospedagens apresentadas no material do ALMA">{accommodationCards.map(([title, image, text]) => <article key={title}><img src={image} alt={`Hospedagem ${title} em Boipeba`} loading="lazy"/><div><span>HOSPEDAGEM EM BOIPEBA</span><h2>{title}</h2><p>{text}</p></div></article>)}</section>}
     <section className="internal-grid">{page.blocks.map(([title, text], i) => <article key={title}><span>0{i + 1}</span><h2>{title}</h2><p>{text}</p></article>)}</section>
     <section className="internal-cta"><span className="kicker">ALMA RÉVEILLON 2027</span><h2>Seu próximo ano<br/><em>pode começar aqui.</em></h2><a className="ticket" href={TICKETS} target="_blank" rel="noreferrer" onClick={() => trackTicketClick('internal-cta')}>Comprar no Sympla <ArrowRight size={18}/></a></section>
     <footer><a className="wordmark" href="/"><img src="/brand/alma-logo-trimmed.png" alt="ALMA Réveillon 2027"/></a><p>RÉVEILLON 2027 · BOIPEBA</p></footer>
