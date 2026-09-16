@@ -1,0 +1,309 @@
+import { useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
+import { ArrowRight, X } from 'lucide-react'
+import { useLanguage } from '../../i18n/LanguageContext'
+import { trackTicketClick, TICKETS_URL } from '../../lib/tracking'
+import LanguageSwitcher from './language-switcher'
+
+interface NavItem {
+  number: string
+  label: string
+  href: string
+  tagline: string
+  external?: boolean
+}
+
+const INSTAGRAM_URL = 'https://www.instagram.com/almareveillonboipeba/'
+
+function CloudBackground() {
+  return (
+    <div className="circular-menu__clouds-wrapper pointer-events-none" aria-hidden="true">
+      {/* Camada 1 de Nuvens Lentas */}
+      <div className="circular-menu__cloud-layer circular-menu__cloud-layer--1 pointer-events-none">
+        <div className="circular-menu__cloud-blob cloud-blob-1" />
+        <div className="circular-menu__cloud-blob cloud-blob-2" />
+        <div className="circular-menu__cloud-blob cloud-blob-3" />
+      </div>
+
+      {/* Camada 2 de Nuvens Médias */}
+      <div className="circular-menu__cloud-layer circular-menu__cloud-layer--2 pointer-events-none">
+        <div className="circular-menu__cloud-blob cloud-blob-4" />
+        <div className="circular-menu__cloud-blob cloud-blob-5" />
+      </div>
+
+      {/* Camada 3 de Nuvens Rápidas e Suaves */}
+      <div className="circular-menu__cloud-layer circular-menu__cloud-layer--3 pointer-events-none">
+        <div className="circular-menu__cloud-blob cloud-blob-6" />
+        <div className="circular-menu__cloud-blob cloud-blob-7" />
+      </div>
+
+      {/* Gradiente de luz solar suave */}
+      <div className="circular-menu__sun-flare pointer-events-none" />
+    </div>
+  )
+}
+
+interface CircularMenuProps {
+  ticketsUrl?: string
+  instagramUrl?: string
+}
+
+export default function CircularMenu({
+  ticketsUrl = TICKETS_URL,
+  instagramUrl = INSTAGRAM_URL,
+}: CircularMenuProps) {
+  const { t, language } = useLanguage()
+  const [isOpen, setIsOpen] = useState(false)
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+
+  const navItems: NavItem[] = [
+    { number: '01', label: t.nav.items.experience.label, href: '#experiencia', tagline: t.nav.items.experience.tagline },
+    { number: '02', label: t.nav.items.media.label, href: '#midia', tagline: t.nav.items.media.tagline },
+    { number: '03', label: t.nav.items.lineup.label, href: '#programacao', tagline: t.nav.items.lineup.tagline },
+    { number: '04', label: t.nav.items.lodgingPackages.label, href: '#hospedagem', tagline: t.nav.items.lodgingPackages.tagline },
+    { number: '05', label: t.nav.items.tickets.label, href: ticketsUrl, tagline: t.nav.items.tickets.tagline, external: true },
+    { number: '06', label: t.nav.items.island.label, href: '#ilha', tagline: t.nav.items.island.tagline },
+    { number: '07', label: t.nav.items.howToArrive.label, href: '#avisos', tagline: t.nav.items.howToArrive.tagline },
+    { number: '08', label: t.nav.items.whereToStay.label, href: '#hospedagem', tagline: t.nav.items.whereToStay.tagline },
+    { number: '09', label: t.nav.items.faq.label, href: '#faq', tagline: t.nav.items.faq.tagline },
+  ]
+
+  // Bloqueia scroll do body quando aberto
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
+
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  )
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Fecha no ESC
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        setIsOpen(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen])
+
+  const handleNavClick = (href: string) => {
+    setIsOpen(false)
+    const target = document.querySelector(href)
+    if (target) {
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
+    }
+  }
+
+  const isMobile = windowWidth <= 780
+  const panelWidth = isMobile ? windowWidth : Math.min(windowWidth, 640)
+  const openOffset = isMobile
+    ? -(windowWidth - 16 - 20 - 44)
+    : -(panelWidth - (windowWidth * 0.04) - 48)
+
+  return (
+    <>
+      {/* Botão Único que Transita e se Transforma no X de Fechar */}
+      <div className="circular-menu-trigger-container">
+        <motion.button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label={isOpen ? t.nav.ariaCloseMenu : t.nav.ariaOpenMenu}
+          aria-expanded={isOpen}
+          className={`circular-menu-btn ${isOpen ? 'circular-menu-btn--active' : ''}`}
+          animate={{
+            x: isOpen ? openOffset : 0,
+            y: isOpen ? (isMobile ? 2 : 12) : 0,
+          }}
+          transition={{
+            type: 'spring',
+            stiffness: 280,
+            damping: 26,
+            mass: 0.7,
+          }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.94 }}
+        >
+          <div className="circular-menu-btn__icon-wrapper pointer-events-none">
+            <AnimatePresence mode="wait">
+              {isOpen ? (
+                <motion.div
+                  key="close-icon"
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 90, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  className="flex items-center justify-center"
+                >
+                  <X size={18} className="stroke-[2.2]" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="menu-icon"
+                  initial={{ rotate: 90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: -90, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  className="circular-menu-btn__hamburger"
+                >
+                  <span className="circular-menu-btn__line" />
+                  <span className="circular-menu-btn__line circular-menu-btn__line--short" />
+                  <span className="circular-menu-btn__line" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.button>
+      </div>
+
+      {/* Overlay Backdrop com Animação de Expansão Circular */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="circular-menu__overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => setIsOpen(false)}
+          >
+            {/* Painel do Menu com Fundo Claro e Expansão em Círculo (Radial Reveal) */}
+            <motion.aside
+              className="circular-menu__panel"
+              initial={{
+                clipPath: 'circle(0% at calc(100% - 44px) 44px)',
+                opacity: 0.9,
+              }}
+              animate={{
+                clipPath: 'circle(220% at calc(100% - 44px) 44px)',
+                opacity: 1,
+              }}
+              exit={{
+                clipPath: 'circle(0% at calc(100% - 44px) 44px)',
+                opacity: 0.7,
+              }}
+              transition={{
+                duration: 0.82,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label={t.nav.ariaMenuPanel}
+            >
+              {/* Efeito de Nuvens em Movimento e Vidro Fosco Claro (ambos com pointer-events-none) */}
+              <CloudBackground />
+              <div className="circular-menu__glass-tint pointer-events-none" />
+
+              <div className="circular-menu__content">
+                {/* Cabeçalho do Menu Lateral com espaço para o botão animado */}
+                <div className="circular-menu__header flex flex-col gap-3">
+                  <div className="flex items-center justify-between w-full pr-12">
+                    <div className="circular-menu__badge">
+                      <div>
+                        <span>{t.nav.headerBadge}</span>
+                        <a className="circular-menu__header-instagram" href={instagramUrl} target="_blank" rel="noreferrer">@almareveillonboipeba</a>
+                      </div>
+                    </div>
+                    <LanguageSwitcher variant="menu" />
+                  </div>
+                </div>
+
+                {/* Lista Empilhada de Navegação */}
+                <nav className="circular-menu__nav" aria-label={t.nav.ariaMenuPanel}>
+                  <ul className="circular-menu__list">
+                    {navItems.map((item, index) => {
+                      const isHovered = hoveredIndex === index
+                      return (
+                        <motion.li
+                          key={item.href}
+                          className="circular-menu__item"
+                          initial={{ opacity: 0, x: 30, y: 6 }}
+                          animate={{ opacity: 1, x: 0, y: 0 }}
+                          transition={{
+                            delay: 0.1 + index * 0.04,
+                            duration: 0.4,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
+                          onMouseEnter={() => setHoveredIndex(index)}
+                          onMouseLeave={() => setHoveredIndex(null)}
+                        >
+                          <a
+                            href={item.href}
+                            target={item.external ? '_blank' : undefined}
+                            rel={item.external ? 'noreferrer' : undefined}
+                            onClick={(e) => {
+                              if (item.external) {
+                                trackTicketClick({
+                                  ctaLocation: 'circular_menu_nav_item',
+                                  ctaText: item.label,
+                                  destinationUrl: ticketsUrl,
+                                  language,
+                                })
+                                setIsOpen(false)
+                                return
+                              }
+                              e.preventDefault()
+                              handleNavClick(item.href)
+                            }}
+                            className={`circular-menu__link ${isHovered ? 'circular-menu__link--hovered' : ''}`}
+                          >
+                            <span className="circular-menu__title">{item.label}</span>
+                          </a>
+                        </motion.li>
+                      )
+                    })}
+                  </ul>
+                </nav>
+
+                {/* Rodapé do Menu com Modelo de Botão Ticket Idêntico ao Hero */}
+                <motion.div
+                  className="circular-menu__footer"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.35, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <a
+                    href={ticketsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => {
+                      trackTicketClick({
+                        ctaLocation: 'circular_menu_footer_btn',
+                        ctaText: t.nav.liveAlmaBtn,
+                        destinationUrl: ticketsUrl,
+                        language,
+                      })
+                    }}
+                    className="ticket circular-menu__ticket-btn justify-center relative text-center"
+                  >
+                    <span className="ticket-label text-center">{t.nav.liveAlmaBtn}</span>
+                    <span className="ticket-icon-wrapper absolute right-2">
+                      <ArrowRight size={17} />
+                    </span>
+                  </a>
+                </motion.div>
+              </div>
+            </motion.aside>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  )
+}

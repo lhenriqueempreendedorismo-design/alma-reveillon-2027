@@ -1,231 +1,125 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
-import { Play, Pause, Volume2, VolumeX, Maximize2, Minimize2, X, SkipForward, RefreshCw } from 'lucide-react'
+import { useEffect, useRef, useState, useMemo } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Pause, Play, SkipForward, Volume2, VolumeX, X, Minimize2, Maximize2 } from 'lucide-react'
+import { useLanguage } from '../../i18n/LanguageContext'
 
-interface VideoItem {
-  id: string
-  title: string
-  src: string
-  poster: string
-  year: string
+const BASE = import.meta.env.BASE_URL
+
+interface PipVideoPlayerProps {
+  closeOnTrigger?: boolean
 }
 
-const VIDEOS: VideoItem[] = [
-  {
-    id: 'aftermovie-geral',
-    title: 'Aftermovie Oficial',
-    year: 'Edição Especial',
-    src: '/media/pip/aftermovie-geral.mp4',
-    poster: '/media/pip/aftermovie-geral-poster.jpg'
-  },
-  {
-    id: 'alma-2024',
-    title: 'ALMA Highlights',
-    year: 'Edição 2025',
-    src: '/media/pip/alma-2024-reels.mp4',
-    poster: '/media/pip/alma-2024-reels-poster.jpg'
-  }
-]
-
-export default function PipVideoPlayer() {
-  const [isOpen, setIsOpen] = useState(true)
-  const [isMinimized, setIsMinimized] = useState(false)
-  const [currentIdx, setCurrentIdx] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(true)
-  const [isMuted, setIsMuted] = useState(true)
-  const [progress, setProgress] = useState(0)
+export default function PipVideoPlayer({ closeOnTrigger }: PipVideoPlayerProps = {}) {
+  const { t } = useLanguage()
   const videoRef = useRef<HTMLVideoElement>(null)
+  const [open, setOpen] = useState(true)
+  const [minimized, setMinimized] = useState(false)
+  const [index, setIndex] = useState(0)
+  const [playing, setPlaying] = useState(true)
+  const [muted, setMuted] = useState(true)
+  const [progress, setProgress] = useState(0)
 
-  const activeVideo = VIDEOS[currentIdx]
+  const videos = useMemo(() => [
+    { id: 'aftermovie-geral', title: 'Aftermovie Oficial', year: t.pip.editionSpecial, src: `${BASE}media/pip/aftermovie-geral.mp4`, poster: `${BASE}media/pip/aftermovie-geral-poster.jpg` },
+    { id: 'alma-2024', title: 'ALMA Highlights', year: t.pip.edition2025, src: `${BASE}media/pip/alma-2024-reels.mp4`, poster: `${BASE}media/pip/alma-2024-reels-poster.jpg` },
+  ], [t])
+
+  const video = videos[index]
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.muted = isMuted
-      if (isPlaying) {
-        videoRef.current.play().catch(() => {
-          // Fallback se autoplay for bloqueado
-          setIsPlaying(false)
-        })
-      }
+    if (closeOnTrigger) {
+      setOpen(false)
     }
-  }, [currentIdx, isMuted])
+  }, [closeOnTrigger])
 
-  const togglePlay = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (!videoRef.current) return
-    if (videoRef.current.paused) {
-      videoRef.current.play()
-      setIsPlaying(true)
-    } else {
-      videoRef.current.pause()
-      setIsPlaying(false)
-    }
-  }
+  useEffect(() => {
+    const element = videoRef.current
+    if (!element) return
+    element.muted = muted
+    if (playing) element.play().catch(() => setPlaying(false))
+  }, [index, muted, playing])
 
-  const toggleMute = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (!videoRef.current) return
-    videoRef.current.muted = !isMuted
-    setIsMuted(!isMuted)
-  }
-
-  const nextVideo = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setCurrentIdx((prev) => (prev + 1) % VIDEOS.length)
+  const next = () => {
+    setIndex((value) => (value + 1) % videos.length)
     setProgress(0)
   }
 
-  const handleTimeUpdate = () => {
-    if (videoRef.current && videoRef.current.duration) {
-      setProgress((videoRef.current.currentTime / videoRef.current.duration) * 100)
-    }
+  const togglePlay = () => {
+    const element = videoRef.current
+    if (!element) return
+    if (element.paused) { element.play().then(() => setPlaying(true)).catch(() => setPlaying(false)) }
+    else { element.pause(); setPlaying(false) }
   }
 
-  const handleVideoEnded = () => {
-    // Loop para o próximo vídeo automaticamente
-    nextVideo({ stopPropagation: () => {} } as React.MouseEvent)
-  }
-
-  if (!isOpen) {
-    return (
-      <motion.button
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={() => setIsOpen(true)}
-        className="pip-reopen fixed bottom-6 left-6 z-50 flex items-center gap-2 rounded-full border border-white/20 bg-[#143847]/90 px-4 py-2.5 text-xs font-medium text-white shadow-2xl backdrop-blur-md transition-all hover:bg-[#143847] hover:scale-105"
-        aria-label="Abrir Aftermovies"
-      >
-        <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2b829d] opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-[#8fbfce]"></span>
-        </span>
-        Aftermovies ALMA
-      </motion.button>
-    )
-  }
+  const p = t.pip
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: 50, scale: 0.9 }}
-        animate={{ 
-          opacity: 1, 
-          y: 0, 
-          scale: 1,
-          width: '230px',
-          height: '390px'
-        }}
-        exit={{ opacity: 0, y: 50, scale: 0.9 }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className="pip-player fixed bottom-5 left-5 z-[80] overflow-hidden rounded-2xl border border-white/20 bg-[#143847] shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl group md:bottom-8 md:left-8"
-      >
-        {isMinimized ? (
-          // Vista minimizada
-          <div className="flex h-full w-full items-center justify-between px-3.5 py-2 text-white">
-            <div className="flex items-center gap-2 overflow-hidden cursor-pointer" onClick={() => setIsMinimized(false)}>
-              <div className="pip-player__mini-brand"><span className="h-2 w-2 rounded-full bg-[#2b829d] animate-pulse shrink-0" /><span>ALMA</span></div>
+    <AnimatePresence mode="wait">
+      {open ? (
+        <motion.div
+          key="pip-card"
+          className={`pip-card ${minimized ? 'pip-card--minimized' : ''}`}
+          initial={{ opacity: 0, scale: 0.86, y: 25 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.82, y: 32, filter: 'blur(4px)' }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          style={{ transformOrigin: 'bottom right' }}
+        >
+          {minimized ? (
+            <div className="pip-mini">
+              <button className="pip-mini__title" onClick={() => setMinimized(false)}><span>●</span> ALMA</button>
+              <div className="pip-mini__actions">
+                <button onClick={() => setMinimized(false)} aria-label={p.expandAria}><Maximize2 size={13} /></button>
+                <button onClick={() => setOpen(false)} aria-label={p.closeAria}><X size={13} /></button>
+              </div>
             </div>
-            <div className="flex items-center gap-1">
-              <button 
-                onClick={() => setIsMinimized(false)} 
-                className="rounded-full p-1.5 text-white/70 hover:bg-white/10 hover:text-white"
-                aria-label="Expandir"
-              >
-                <Maximize2 size={13} />
-              </button>
-              <button 
-                onClick={() => setIsOpen(false)} 
-                className="rounded-full p-1.5 text-white/70 hover:bg-white/10 hover:text-white"
-                aria-label="Fechar"
-              >
-                <X size={13} />
-              </button>
-            </div>
-          </div>
-        ) : (
-          // Vista Normal / Expandida (Picture in Picture Vertical)
-          <div className="relative h-full w-full flex flex-col justify-between">
-            {/* Vídeo Tag */}
-            <div className="absolute inset-0 z-0 bg-black">
+          ) : (
+            <div className="pip-frame">
               <video
                 ref={videoRef}
-                src={activeVideo.src}
-                poster={activeVideo.poster}
+                src={video.src}
+                poster={video.poster}
                 autoPlay
+                muted={muted}
                 playsInline
-                muted={isMuted}
-                onTimeUpdate={handleTimeUpdate}
-                onEnded={handleVideoEnded}
-                className="pip-player__video"
+                onEnded={next}
+                onTimeUpdate={() => {
+                  if (videoRef.current?.duration) setProgress(videoRef.current.currentTime / videoRef.current.duration * 100)
+                }}
               />
-              {/* Gradientes de contraste */}
-              <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none" />
-              <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none" />
-            </div>
-
-            {/* Barra de Progresso no topo */}
-            <div className="relative z-10 w-full bg-white/20 h-1">
-              <div 
-                className="pip-player__track"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-
-            {/* Cabeçalho do PiP */}
-            <div className="pip-player__header relative z-10 flex items-center justify-between p-3.5 text-white">
-              <div className="flex items-center gap-1.5 bg-black/40 px-2 py-0.5 rounded-full border border-white/10 backdrop-blur-md">
-                <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-ping" />
+              <div className="pip-shade pip-shade--top" />
+              <div className="pip-shade pip-shade--bottom" />
+              <div className="pip-progress"><span style={{ width: `${progress}%` }} /></div>
+              <div className="pip-header">
+                <span className="pip-badge"><i /> {p.badge}</span>
+                <div><button onClick={() => setMinimized(true)} aria-label={p.minimizeAria}><Minimize2 size={13} /></button><button onClick={() => setOpen(false)} aria-label={p.closeAria}><X size={13} /></button></div>
               </div>
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setIsMinimized(true)}
-                  className="pip-player__edge-button"
-                  aria-label="Minimizar"
-                >
-                  <Minimize2 size={13} />
-                </button>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="rounded-full bg-black/40 p-1.5 text-white/80 hover:bg-black/60 hover:text-white transition-all backdrop-blur-md border border-white/10"
-                  aria-label="Fechar"
-                >
-                  <X size={13} />
-                </button>
-              </div>
-            </div>
-
-            {/* Rodapé e Controles */}
-            <div className="pip-player__controls">
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={togglePlay}
-                    className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md transition hover:bg-white hover:text-black"
-                    aria-label={isPlaying ? 'Pausar' : 'Reproduzir'}
-                  >
-                    {isPlaying ? <Pause size={13} /> : <Play size={13} className="ml-0.5" />}
-                  </button>
-                  <button
-                    onClick={toggleMute}
-                    className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md transition hover:bg-white hover:text-black"
-                    aria-label={isMuted ? 'Ativar som' : 'Desativar som'}
-                  >
-                    {isMuted ? <VolumeX size={13} /> : <Volume2 size={13} />}
-                  </button>
+              <div className="pip-footer">
+                <div className="pip-info"><small>{video.year}</small><strong>{video.title}</strong></div>
+                <div className="pip-controls">
+                  <div><button onClick={togglePlay} aria-label={playing ? p.pauseAria : p.playAria}>{playing ? <Pause size={13} /> : <Play size={13} />}</button><button onClick={() => setMuted((value) => !value)} aria-label={muted ? p.unmuteAria : p.muteAria}>{muted ? <VolumeX size={13} /> : <Volume2 size={13} />}</button></div>
+                  <button className="pip-next" onClick={next} aria-label={p.nextAria}>{p.nextBtn} <SkipForward size={11} /></button>
                 </div>
-
-                <button
-                  onClick={nextVideo}
-                  className="flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-medium text-white backdrop-blur-md hover:bg-white/30 transition border border-white/10"
-                  aria-label="Próximo vídeo"
-                >
-                  <span>Próximo</span>
-                  <SkipForward size={11} />
-                </button>
               </div>
-          </div>
-        )}
-      </motion.div>
+            </div>
+          )}
+        </motion.div>
+      ) : (
+        <motion.button
+          key="pip-reopen"
+          className="pip-reopen"
+          onClick={() => setOpen(true)}
+          aria-label={p.reopenAria}
+          initial={{ opacity: 0, scale: 0.88, y: 15 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.88, y: 15 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {p.reopenBtn}
+        </motion.button>
+      )}
     </AnimatePresence>
   )
 }
