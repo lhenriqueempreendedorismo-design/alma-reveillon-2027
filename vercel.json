@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/como-chegar", "destination": "/" },
+    { "source": "/onde-ficar", "destination": "/" },
+    { "source": "/programacao", "destination": "/" },
+    { "source": "/experiencia", "destination": "/" },
+    { "source": "/historias", "destination": "/" }
+  ]
+}

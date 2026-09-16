@@ -11,6 +11,7 @@ import HoverFooter from './components/ui/hover-footer'
 import CircularMenu from './components/ui/circular-menu'
 import AccommodationSection from './AccommodationSection'
 import ImportantNotices from './ImportantNotices'
+import Subpage, { type SubpageKey } from './Subpages'
 import { LanguageProvider, useLanguage } from './i18n/LanguageContext'
 import { trackTicketClick, TICKETS_URL } from './lib/tracking'
 
@@ -339,10 +340,17 @@ function AppContent() {
   )
 }
 
+function RoutedApp() {
+  const pathname = window.location.pathname.replace(/\/$/, '') || '/'
+  const subpage = pathname.slice(1) as SubpageKey
+  const validSubpages: SubpageKey[] = ['como-chegar', 'onde-ficar', 'programacao', 'experiencia', 'historias']
+  return pathname !== '/' && validSubpages.includes(subpage) ? <Subpage path={subpage} /> : <AppContent />
+}
+
 export default function App() {
   return (
     <LanguageProvider>
-      <AppContent />
+      <RoutedApp />
     </LanguageProvider>
   )
 }

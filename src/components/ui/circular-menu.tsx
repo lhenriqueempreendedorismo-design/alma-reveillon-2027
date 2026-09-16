@@ -57,15 +57,15 @@ export default function CircularMenu({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   const navItems: NavItem[] = [
-    { number: '01', label: t.nav.items.experience.label, href: '#experiencia', tagline: t.nav.items.experience.tagline },
+    { number: '01', label: t.nav.items.experience.label, href: '/experiencia', tagline: t.nav.items.experience.tagline },
     { number: '02', label: t.nav.items.media.label, href: '#midia', tagline: t.nav.items.media.tagline },
-    { number: '03', label: t.nav.items.lineup.label, href: '#programacao', tagline: t.nav.items.lineup.tagline },
-    { number: '04', label: t.nav.items.lodgingPackages.label, href: '#hospedagem', tagline: t.nav.items.lodgingPackages.tagline },
+    { number: '03', label: t.nav.items.lineup.label, href: '/programacao', tagline: t.nav.items.lineup.tagline },
+    { number: '04', label: t.nav.items.lodgingPackages.label, href: '/onde-ficar', tagline: t.nav.items.lodgingPackages.tagline },
     { number: '05', label: t.nav.items.tickets.label, href: ticketsUrl, tagline: t.nav.items.tickets.tagline, external: true },
-    { number: '06', label: t.nav.items.island.label, href: '#ilha', tagline: t.nav.items.island.tagline },
-    { number: '07', label: t.nav.items.howToArrive.label, href: '#avisos', tagline: t.nav.items.howToArrive.tagline },
-    { number: '08', label: t.nav.items.whereToStay.label, href: '#hospedagem', tagline: t.nav.items.whereToStay.tagline },
-    { number: '09', label: t.nav.items.faq.label, href: '#faq', tagline: t.nav.items.faq.tagline },
+    { number: '06', label: t.nav.items.island.label, href: '/experiencia', tagline: t.nav.items.island.tagline },
+    { number: '07', label: t.nav.items.howToArrive.label, href: '/como-chegar', tagline: t.nav.items.howToArrive.tagline },
+    { number: '08', label: t.nav.items.whereToStay.label, href: '/onde-ficar', tagline: t.nav.items.whereToStay.tagline },
+    { number: '09', label: t.nav.items.faq.label, href: '/#faq', tagline: t.nav.items.faq.tagline },
   ]
 
   // Bloqueia scroll do body quando aberto
@@ -103,6 +103,10 @@ export default function CircularMenu({
 
   const handleNavClick = (href: string) => {
     setIsOpen(false)
+    if (href.startsWith('/')) {
+      window.location.href = href
+      return
+    }
     const target = document.querySelector(href)
     if (target) {
       setTimeout(() => {
