@@ -3,7 +3,7 @@ import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, ChevronLeft, ChevronRig
 import CircularMenu from './components/ui/circular-menu'
 import AccommodationModal from './AccommodationModal'
 import { accommodations, type Accommodation } from './data/accommodations'
-import { islandPhotos } from './data/island-photos'
+import { islandPhotos, galleryPhotos, mediaPhotos, partyPhotos } from './data/island-photos'
 import { reviews } from './data/reviews'
 import { TICKETS_URL, trackTicketClick } from './lib/tracking'
 import { useLanguage } from './i18n/LanguageContext'
@@ -12,7 +12,7 @@ import './subpages.css'
 export { reviews } from './data/reviews'
 export type { ReviewItem } from './data/reviews'
 export type SubpageKey = 'como-chegar' | 'onde-ficar' | 'programacao' | 'experiencia' | 'midia' | 'pacotes-alma-com-hospedagem' | 'historias' | 'boi-people'
-type PhotoId = typeof islandPhotos[number]['id']
+type PhotoId = (typeof islandPhotos[number] | typeof galleryPhotos[number] | typeof partyPhotos[number])['id']
 const photoUrl = (id: string, size = 1280) => `/media/ilha/${id}-${size}.webp`
 const pageLinks = [
   ['experiencia', 'Experiência'], ['midia', 'Mídia'], ['programacao', 'Programação'],
@@ -20,8 +20,8 @@ const pageLinks = [
 ] as const
 
 function Photo({ id, className = '', eager = false, sizes = '100vw' }: { id: PhotoId; className?: string; eager?: boolean; sizes?: string }) {
-  const photo = islandPhotos.find(p => p.id === id)!
-  return <img alt={photo.alt} className={className} src={photoUrl(id)} srcSet={[640, 1280, 2000].map(w => `${photoUrl(id, w)} ${w}w`).join(', ')} sizes={sizes} width={photo.width} height={photo.height} loading={eager ? 'eager' : 'lazy'} {...{ fetchpriority: eager ? 'high' : 'auto' }} decoding="async" />
+  const photo = [...islandPhotos, ...galleryPhotos, ...partyPhotos].find(p => p.id === id)!
+  return <img alt={photo.alt} className={className} src={photoUrl(id)} srcSet={[...new Map([640, 1280, 2000].map(size => [Math.min(size, photo.width), photoUrl(id, size)]))].map(([width, url]) => `${url} ${width}w`).join(', ')} sizes={sizes} width={photo.width} height={photo.height} loading={eager ? 'eager' : 'lazy'} {...{ fetchpriority: eager ? 'high' : 'auto' }} decoding="async" />
 }
 
 function TicketLink({ label = 'Viver o ALMA', location }: { label?: string; location: string }) {
@@ -38,7 +38,7 @@ function Shell({ path, label, title, accent, photo, intro, children, gallery = f
       <CircularMenu />
     </header>
     <main>
-      <section className="island-hero" aria-labelledby="page-title">
+      <section className={`island-hero${photo === 'festa-por-do-sol' ? ' island-hero--party' : ''}`} aria-labelledby="page-title">
         <Photo id={photo} eager className="island-hero__image" />
         <div className="island-hero__shade" />
         <div className="island-hero__copy"><span className="island-kicker">ALMA RÉVEILLON 2027 · {label}</span><h1 id="page-title">{title}{accent && <em>{accent}</em>}</h1>{intro && <p>{intro}</p>}</div>
@@ -61,7 +61,7 @@ function NextChapter({ label, title, href, image }: { label: string; title: stri
 function ExperiencePage() {
   return <Shell path="experiencia" label="A experiência" title="Aqui, o luxo" accent="é outro." photo="costa" intro="O mar por perto. Os pés na areia. E a liberdade de viver o tempo da ilha.">
     <section className="island-section island-editorial" id="a-ilha"><div className="island-editorial__copy"><span className="island-kicker">01 / O DESTINO</span><h2>Uma ilha.<br /><em>Outro ritmo.</em></h2><p>Entre coqueirais, caminhos de areia e o azul do mar, Boipeba convida a desacelerar. O dia começa sem pressa e termina onde o sol encontra a água.</p><a className="island-text-link" href="/midia">Um olhar sobre a ilha <ArrowUpRight size={17} /></a></div><figure><Photo id="piscinas" sizes="(max-width: 700px) 100vw, 55vw" /><figcaption>Água, luz e os desenhos da maré.</figcaption></figure></section>
-    <section className="island-panoramic"><Photo id="coqueiral" /><div><span className="island-kicker">02 / O ENCONTRO</span><h2>O dia é da ilha.<br /><em>A noite é do ALMA.</em></h2><p>Cinco noites na Praia da Cueira, com música, Open Bar Premium e encontros que atravessam a virada.</p><a className="island-text-link" href="/programacao">Conhecer as noites <ArrowRight size={17} /></a></div></section>
+    <section className="island-panoramic"><Photo id="festa-pista-neon" /><div><span className="island-kicker">02 / O ENCONTRO</span><h2>O dia é da ilha.<br /><em>A noite é do ALMA.</em></h2><p>Cinco noites na Praia da Cueira, com música, Open Bar Premium e encontros que atravessam a virada.</p><a className="island-text-link" href="/programacao">Conhecer as noites <ArrowRight size={17} /></a></div></section>
     <section className="island-section"><SectionHeading label="03 / CUIDAR DO QUE ENCANTA" title="A beleza também pede cuidado.">Leve boas memórias. Deixe a ilha tão bonita quanto a encontrou.</SectionHeading><div className="island-principles"><article><span>01</span><h3>Menos descartáveis</h3><p>Reutilize seu copo durante as festas e descarte os resíduos nos locais indicados.</p></article><article><span>02</span><h3>Respeito à natureza</h3><p>Preserve a vegetação, os recifes e os caminhos da ilha.</p></article><article><span>03</span><h3>Valorize quem é daqui</h3><p>Conheça os sabores, o trabalho e a hospitalidade da comunidade local.</p></article></div></section>
     <NextChapter label="SUA ESTADIA" title="Fique mais um pouco." href="/pacotes-alma-com-hospedagem" image="reflexos" />
   </Shell>
@@ -79,10 +79,10 @@ function GalleryPage() {
     document.body.style.overflow = 'hidden'
     return () => { document.body.style.overflow = previous }
   }, [opened])
-  const move = (direction: number) => setActive(index => index === null ? null : (index + direction + islandPhotos.length) % islandPhotos.length)
-  return <Shell path="midia" label="Galeria" title="Boipeba," accent="em todos os sentidos." photo="piscinas" gallery>
-    <section className="island-section island-gallery-section" aria-label="Galeria de Boipeba"><div className="island-gallery-heading"><span className="island-kicker">UM OLHAR SOBRE O PARAÍSO</span><span>{String(islandPhotos.length).padStart(2, '0')} fotografias</span></div><div className="island-gallery">{islandPhotos.map((photo, i) => <button type="button" key={photo.id} className="island-gallery__item" onClick={() => setActive(i)} aria-label={`Ampliar: ${photo.alt}`} aria-haspopup="dialog"><Photo id={photo.id} sizes="(max-width: 600px) 50vw, (max-width: 1000px) 50vw, 33vw" /><span className="island-gallery__zoom"><Plus size={20} /></span></button>)}</div></section>
-    <dialog className="island-lightbox" ref={dialog} onCancel={close} onClose={() => setActive(null)} onClick={e => { if (e.target === e.currentTarget) close() }} onKeyDown={e => { if (e.key === 'ArrowLeft') { e.preventDefault(); move(-1) } if (e.key === 'ArrowRight') { e.preventDefault(); move(1) } }} aria-label="Visualizador de fotografias de Boipeba"><button className="island-lightbox__close" type="button" aria-label="Fechar fotografia" onClick={close}><X /></button>{active !== null && <><button className="island-lightbox__prev" type="button" aria-label="Fotografia anterior" onClick={() => move(-1)}><ChevronLeft /></button><figure><img key={islandPhotos[active].id} src={photoUrl(islandPhotos[active].id, 2000)} alt={islandPhotos[active].alt} /><figcaption aria-live="polite"><span>{islandPhotos[active].alt}</span><span>{active + 1} / {islandPhotos.length}</span></figcaption></figure><button className="island-lightbox__next" type="button" aria-label="Próxima fotografia" onClick={() => move(1)}><ChevronRight /></button></>}</dialog>
+  const move = (direction: number) => setActive(index => index === null ? null : (index + direction + mediaPhotos.length) % mediaPhotos.length)
+  return <Shell path="midia" label="Galeria" title="Boipeba," accent="em todos os sentidos." photo="galeria-sol-e-coqueiros" gallery>
+    <section className="island-section island-gallery-section" aria-label="Galeria de Boipeba e do ALMA"><div className="island-gallery-heading"><span className="island-kicker">DO SOL À PISTA</span><span>{String(mediaPhotos.length).padStart(2, '0')} fotografias</span></div><div className="island-gallery">{mediaPhotos.map((photo, i) => <button type="button" key={photo.id} className="island-gallery__item" onClick={() => setActive(i)} aria-label={`Ampliar: ${photo.alt}`} aria-haspopup="dialog"><Photo id={photo.id} sizes="(max-width: 600px) 50vw, (max-width: 1000px) 50vw, 33vw" /><span className="island-gallery__zoom"><Plus size={20} /></span></button>)}</div></section>
+    <dialog className="island-lightbox" ref={dialog} onCancel={close} onClose={() => setActive(null)} onClick={e => { if (e.target === e.currentTarget) close() }} onKeyDown={e => { if (e.key === 'ArrowLeft') { e.preventDefault(); move(-1) } if (e.key === 'ArrowRight') { e.preventDefault(); move(1) } }} aria-label="Visualizador de fotografias de Boipeba e do ALMA"><button className="island-lightbox__close" type="button" aria-label="Fechar fotografia" onClick={close}><X /></button>{active !== null && <><button className="island-lightbox__prev" type="button" aria-label="Fotografia anterior" onClick={() => move(-1)}><ChevronLeft /></button><figure><img key={mediaPhotos[active].id} src={photoUrl(mediaPhotos[active].id, 2000)} alt={mediaPhotos[active].alt} /><figcaption aria-live="polite"><span>{mediaPhotos[active].alt}</span><span>{active + 1} / {mediaPhotos.length}</span></figcaption></figure><button className="island-lightbox__next" type="button" aria-label="Próxima fotografia" onClick={() => move(1)}><ChevronRight /></button></>}</dialog>
   </Shell>
 }
 
@@ -94,8 +94,9 @@ const nights = [
   { day: '31', week: 'QUINTA', title: 'ALMA Réveillon', subtitle: 'A grande virada', time: '22h — 06h' },
 ]
 function ProgramPage() {
-  return <Shell path="programacao" label="Programação" title="Cinco noites." accent="Uma nova energia." photo="dourado" intro="De 27 a 31 de dezembro, a Praia da Cueira é o nosso ponto de encontro.">
+  return <Shell path="programacao" label="Programação" title="Cinco noites." accent="Uma nova energia." photo="festa-por-do-sol" intro="De 27 a 31 de dezembro, a Praia da Cueira é o nosso ponto de encontro.">
     <section className="island-section"><SectionHeading label="DEZEMBRO 2026 / JANEIRO 2027" title="Cada noite, uma história.">Open Bar Premium nas cinco festas. Escolha como viver a sua virada.</SectionHeading><div className="island-schedule">{nights.map(n => <article key={n.day}><div className="island-schedule__date"><strong>{n.day}</strong><span>DEZ<br />{n.week}</span></div><div><h2>{n.title}</h2>{n.subtitle && <p>{n.subtitle}</p>}</div><span className="island-schedule__time">{n.time}</span></article>)}</div><div className="island-booking-row"><span><MapPin size={16} /> Praia da Cueira · Boipeba</span><TicketLink label="Escolher meus ingressos" location="programacao_footer" /></div></section>
+    <section className="island-section island-party-story" aria-label="A energia do ALMA"><div><span className="island-kicker">LUZ, MÚSICA & AREIA</span><h2>A noite encontra<br /><em>o ritmo da ilha.</em></h2><p>Da pista sob os coqueiros às performances sobre a areia, cada encontro ganha a paisagem de Boipeba.</p></div><div className="island-party-story__grid"><Photo id="festa-palco-vermelho" /><Photo id="festa-ritual-fogo" /><Photo id="festa-amigos" /></div></section>
     <NextChapter label="ENTRE UMA NOITE E OUTRA" title="Viva o tempo da ilha." href="/experiencia" image="horizonte" />
   </Shell>
 }

@@ -55,3 +55,7 @@ Esta validação cobre o ambiente local e as interações descritas. Não inclui
 - Fontes e confirmação do destino registradas em `docs/boi-people-sources.json`. Os registros de viagem não são apresentados como endosso do evento ou presença confirmada em 2027.
 - Compilação TypeScript e versão de produção aprovadas após esses ajustes.
 - Seis subpáginas verificadas em 320, 390, 768 e 1440px sem rolagem horizontal ou conteúdo dos títulos excedendo os próprios blocos (24 combinações). Boi People inspecionado visualmente em 390 e 1440px, fotos carregadas e links originais conferidos. Corrigido também o aviso de compatibilidade do atributo fetchpriority com React 18.
+
+## Curadoria vibrante da galeria — 18/09/2026
+
+Substituída a seleção de /midia por 18 fotos com mar azul/turquesa, coqueirais verdes, céu azul e luz de sol. Nova capa de praia com coqueiros. Fotos escolhidas visualmente no acervo FOTOS_UNIFICADAS, sem filtros de cor. Catálogo da galeria separado das imagens editoriais usadas nas outras páginas. Arquivos WebP nas resoluções 640/1280/2000, limitados à largura original para não ampliar imagens pequenas. Origem em `docs/curadoria-galeria-vibrante.json`.
