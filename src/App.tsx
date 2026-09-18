@@ -13,6 +13,8 @@ import AccommodationSection from './AccommodationSection'
 import ImportantNotices from './ImportantNotices'
 import Subpage, { reviews, type SubpageKey } from './Subpages'
 import ReviewCarousel from './components/ui/review-carousel'
+import BoiPeopleSection from './components/ui/boi-people-section'
+import PartnersGrid from './components/ui/partners-grid'
 import { LanguageProvider, useLanguage } from './i18n/LanguageContext'
 import { trackTicketClick, TICKETS_URL } from './lib/tracking'
 
@@ -200,6 +202,7 @@ function AppContent() {
 
       <div id="midia">
         <StackedGallery items={gallery.map(([src, alt]) => ({ src, alt }))} />
+        <BoiPeopleSection />
       </div>
 
       <section className="nights light" id="programacao">
@@ -228,11 +231,14 @@ function AppContent() {
             <h2>{t.openBar.h2Part1}<br/><em>{t.openBar.h2Part2}</em></h2>
             <p>{t.openBar.p}</p>
             <div className="bar-brands" aria-label={t.openBar.brandsAria}>
-              <span>Beefeater</span><span>Absolut</span><span>Jameson</span><span>Sol Premium</span><span>Aperol Spritz</span><span>Red Bull</span>
+              <span>Corona Extra</span><span>Absolut</span><span>Beefeater London</span><span>Sol Premium</span><span>Red Bull</span><span>Prata Mixers</span>
             </div>
             <div className="bar-highlight">{t.openBar.highlight}</div>
           </Reveal>
           <div className="orb" aria-hidden="true"><span>27 — 31</span><strong>{t.openBar.month}</strong></div>
+        </div>
+        <div className="shader-content-layer" style={{ maxWidth: '1240px', margin: '40px auto 0', padding: '0 4vw', width: '100%' }}>
+          <PartnersGrid title="PATROCINADORES &amp; PARCEIROS DO FESTIVAL" />
         </div>
       </section>
 
@@ -340,7 +346,7 @@ function AppContent() {
 function RoutedApp() {
   const pathname = window.location.pathname.replace(/\/$/, '') || '/'
   const subpage = pathname.slice(1) as SubpageKey
-  const validSubpages: SubpageKey[] = ['como-chegar', 'onde-ficar', 'programacao', 'experiencia']
+  const validSubpages: SubpageKey[] = ['como-chegar', 'onde-ficar', 'programacao', 'experiencia', 'midia', 'historias', 'boi-people']
   return pathname !== '/' && validSubpages.includes(subpage) ? <Subpage path={subpage} /> : <AppContent />
 }
 

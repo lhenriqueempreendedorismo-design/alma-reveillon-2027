@@ -37,7 +37,7 @@ a{color:inherit;text-decoration:none}
    HERO SECTION & MOBILE NEGATIVE SCREEN SUBTITLE
    ========================================================================== */
 .hero{position:relative;height:125vh;min-height:760px;overflow:hidden;background:#dff3f8}
-.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.82) brightness(1.16)}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.12) contrast(1.02) brightness(1.03)}
 .hero-wash{position:absolute;inset:0;background:linear-gradient(90deg,rgba(244,251,253,.78) 0%,rgba(244,251,253,.48) 38%,rgba(244,251,253,.06) 70%),linear-gradient(180deg,rgba(255,255,255,.4),transparent 35%)}
 .cloud{position:absolute;border-radius:50%;filter:blur(35px);opacity:.75;background:rgba(255,255,255,.75);pointer-events:none}
 .cloud-a{width:58vw;height:18vw;top:-7vw;left:-10vw;box-shadow:22vw 3vw 0 5vw rgba(255,255,255,.5)}
@@ -167,7 +167,7 @@ em{font-style:normal;color:#2b829d}
 .manifesto-grid p{text-wrap:balance;max-width:46ch}
 
 .cinema{height:110vh;min-height:720px;position:relative;display:flex;align-items:center;color:#f7f3e9;overflow:hidden}
-.cinema-bg{position:absolute;inset:-5%;background:url('/media/curadoria/paraiso-fullscreen.webp') center/cover no-repeat;filter:brightness(.63) saturate(.9);transform:scale(1.05)}
+.cinema-bg{position:absolute;inset:-5%;background:url('/media/curadoria/paraiso-fullscreen.webp') center/cover no-repeat;filter:brightness(.78) saturate(1.22) contrast(1.04);transform:scale(1.05)}
 .cinema-copy{position:relative;z-index:2;margin-left:auto;width:min(600px,80vw);margin-right:7vw}
 .cinema h2{font-size:clamp(4rem,7.4vw,7.8rem);text-wrap:balance}
 .cinema p{font-size:1.15rem;line-height:1.68;max-width:44ch;text-wrap:balance}
@@ -175,13 +175,13 @@ em{font-style:normal;color:#2b829d}
 .stacked-gallery{position:relative;z-index:10;background:#03120e}
 .stacked-gallery__sticky{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;isolation:isolate}
 .stacked-gallery__slide{position:absolute;inset:0;margin:0;overflow:hidden;background:#03120e;will-change:transform}
-.stacked-gallery__slide img{display:block;width:100%;height:100%;object-fit:cover;filter:brightness(.72) saturate(.9)}
+.stacked-gallery__slide img{display:block;width:100%;height:100%;object-fit:cover;filter:brightness(.88) saturate(1.2) contrast(1.04)}
 .stacked-gallery__slide figcaption{position:absolute;left:4vw;bottom:4vw;color:#fff;font-size:9px;letter-spacing:.28em;z-index:2}
 .gallery{background:#0b5268}
 .gallery{position:relative;z-index:10}
 .gallery figure{height:100vh;min-height:650px;margin:0;position:sticky;top:0;overflow:hidden}
 
-.gallery img{width:100%;height:100%;object-fit:cover;filter:brightness(.72) saturate(.9)}
+.gallery img{width:100%;height:100%;object-fit:cover;filter:brightness(.88) saturate(1.2) contrast(1.04)}
 .gallery figcaption{position:absolute;left:4vw;bottom:4vw;color:#fff;font-size:9px;letter-spacing:.28em}
 
 .nights{padding-bottom:170px}
@@ -218,7 +218,7 @@ em{font-style:normal;color:#2b829d}
 .accommodation-card:hover{transform:translateY(-5px);box-shadow:0 28px 65px rgba(3,18,14,.22)}
 .accommodation-card__open{appearance:none;width:100%;border:0;padding:0;background:none;color:inherit;text-align:left;cursor:pointer}
 .accommodation-card__visual{height:285px;padding:24px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
-.accommodation-card__visual>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.72) saturate(.9)}
+.accommodation-card__visual>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.88) saturate(1.15) contrast(1.02)}
 .accommodation-card__visual>span,.accommodation-card__visual>small{position:relative;z-index:2;text-shadow:0 2px 8px rgba(0,0,0,.65)}
 .accommodation-card__visual::after,.accommodation-placeholder::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent 25%,rgba(255,255,255,.08),transparent 70%)}
 .accommodation-card__visual>span{font-size:11px;letter-spacing:.25em;position:relative;z-index:2}
@@ -643,7 +643,7 @@ em{font-style:normal;color:#2b829d}
 @keyframes float{50%{transform:translateY(-16px)}}
 
 .finale{height:105vh;min-height:720px;position:relative;color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding-bottom:80px}
-.finale-bg{position:absolute;inset:0;background:linear-gradient(rgba(7,44,60,.2),rgba(7,44,60,.55)),url('/media/curadoria/cta-por-do-sol.webp') center 50%/cover no-repeat;filter:saturate(.8)}
+.finale-bg{position:absolute;inset:0;background:linear-gradient(rgba(7,44,60,.2),rgba(7,44,60,.55)),url('/media/curadoria/cta-por-do-sol.webp') center 50%/cover no-repeat;filter:saturate(1.2) contrast(1.03)}
 .finale-copy{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
 .finale h2{font-size:clamp(3.6rem,6.2vw,6.7rem);text-wrap:balance}
 .finale p{line-height:1.7;text-wrap:balance;max-width:48ch;margin:0 auto}
@@ -1520,3 +1520,551 @@ em{font-style:normal;color:#2b829d}
 .alma-subpage-footer{display:flex;justify-content:space-between;padding:28px 7vw;border-top:1px solid rgba(20,56,71,.15);font-size:11px;color:#5f7d85}
 @media(max-width:900px){.alma-route-grid{grid-template-columns:repeat(2,1fr)}.alma-experience-grid{grid-template-columns:1fr}.alma-experience-grid img{height:400px}.alma-review-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){.alma-subpage-nav{padding:14px 18px}.alma-subpage-nav img{width:72px}.alma-subpage-back{font-size:9px}.alma-subpage-ticket{padding:9px 10px;font-size:9px}.alma-subpage-hero{padding:90px 20px 65px}.alma-subpage-hero h1{font-size:clamp(2.55rem,11.5vw,3.8rem);line-height:1.05;letter-spacing:.005em}.alma-subpage-content{padding:60px 20px 80px}.alma-route-grid,.alma-stay-grid,.alma-review-grid{grid-template-columns:1fr}.alma-route-grid article{padding:22px}.alma-stay-card>img{height:220px}.alma-night-list article{grid-template-columns:70px 1fr auto;gap:12px}.alma-night-list article>span{font-size:9px}.alma-night-list h2{font-size:22px}.alma-experience-grid img{height:300px}.alma-subpage-footer{padding:22px 20px;flex-direction:column;gap:8px}}
+
+/* ==========================================================================
+   PARTNERS & SPONSORS GRID
+   ========================================================================== */
+.partners-wrapper {
+  margin-top: 36px;
+  width: 100%;
+}
+.partners-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+.partners-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.72);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.partners-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.14);
+}
+.partners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+}
+.partner-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  backdrop-filter: blur(8px);
+}
+.partner-badge:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(87, 210, 244, 0.45);
+  transform: translateY(-2px);
+}
+.partner-logo-box {
+  width: 100%;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
+}
+.partner-logo-svg {
+  width: 100%;
+  max-width: 110px;
+  height: 38px;
+  display: block;
+}
+.partner-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 8px;
+  text-align: center;
+}
+.partner-category {
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  color: rgba(87, 210, 244, 0.85);
+  margin-top: 2px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   BOI PEOPLE SECTION & CELEBRITIES SHOWCASE
+   ========================================================================== */
+.boi-people-section {
+  padding: 100px 4vw 80px;
+  background: #04141c;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.boi-people-header {
+  max-width: 860px;
+  margin: 0 auto 50px;
+  text-align: center;
+}
+.boi-people-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(87, 210, 244, 0.1);
+  border: 1px solid rgba(87, 210, 244, 0.28);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #57d2f4;
+  margin-bottom: 22px;
+  text-transform: uppercase;
+}
+.boi-people-title {
+  font-family: Tusker, "Arial Narrow", Impact, sans-serif;
+  font-size: clamp(3.2rem, 6.5vw, 6.5rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+  margin: 0 0 20px;
+}
+.boi-people-title em {
+  display: block;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.6rem, 3.2vw, 3rem);
+  text-transform: lowercase;
+  color: #80eeb4;
+  letter-spacing: 0.04em;
+  margin-top: 6px;
+}
+.boi-people-lead {
+  font-size: 16px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 650px;
+  margin: 0 auto;
+}
+.boi-people-mosaic-wrapper {
+  max-width: 1040px;
+  margin: 0 auto 40px;
+}
+.boi-people-mosaic-card {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  background: #051a24;
+}
+.boi-people-mosaic-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: saturate(1.18) contrast(1.04);
+}
+.boi-people-mosaic-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 20px 14px;
+  background: linear-gradient(180deg, transparent 0%, rgba(3, 18, 24, 0.85) 100%);
+  display: flex;
+  justify-content: center;
+}
+.boi-people-caption {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+}
+.boi-people-celebs-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 1000px;
+  margin: 0 auto 50px;
+}
+.boi-people-celeb-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+.boi-people-celeb-pill:hover {
+  background: rgba(87, 210, 244, 0.15);
+  border-color: rgba(87, 210, 244, 0.45);
+  transform: translateY(-2px);
+}
+.boi-people-celeb-info {
+  display: flex;
+  flex-direction: column;
+}
+.boi-people-celeb-info strong {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.boi-people-celeb-info span {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.55);
+}
+.boi-people-arrow {
+  color: rgba(255, 255, 255, 0.4);
+  transition: transform 0.25s ease;
+}
+.boi-people-celeb-pill:hover .boi-people-arrow {
+  transform: translate(2px, -2px);
+  color: #57d2f4;
+}
+
+/* Quem Featured Article Card */
+.boi-people-quem-card {
+  max-width: 860px;
+  margin: 0 auto 70px;
+  padding: 36px 40px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(16, 67, 89, 0.4) 0%, rgba(6, 29, 43, 0.6) 100%);
+  border: 1px solid rgba(87, 210, 244, 0.28);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+.boi-people-quem-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #57d2f4;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.quem-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff3344;
+  box-shadow: 0 0 10px #ff3344;
+}
+.boi-people-quem-title {
+  font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+  line-height: 1.35;
+  font-weight: 700;
+  margin: 0 0 14px;
+  color: #ffffff;
+}
+.boi-people-quem-p {
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0 0 24px;
+}
+.boi-people-quem-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: #57d2f4;
+  color: #04151f;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+.boi-people-quem-btn:hover {
+  background: #80eeb4;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(87, 210, 244, 0.3);
+}
+
+/* Paradisiacal Beaches Block */
+.boi-beaches-block {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.boi-beaches-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.boi-beaches-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #80eeb4;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.boi-beaches-title {
+  font-family: Tusker, "Arial Narrow", Impact, sans-serif;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+.boi-beaches-subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 580px;
+  margin: 0 auto;
+}
+.boi-beaches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+.boi-beach-card {
+  padding: 24px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+.boi-beach-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(128, 238, 180, 0.35);
+  transform: translateY(-3px);
+}
+.boi-beach-top {
+  margin-bottom: 12px;
+}
+.boi-beach-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(128, 238, 180, 0.12);
+  border: 1px solid rgba(128, 238, 180, 0.3);
+  color: #80eeb4;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.boi-beach-name {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: #ffffff;
+}
+.boi-beach-desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0;
+}
+
+/* ==========================================================================
+   SUBPAGE CUEIRA BANNER & SUSTAINABILITY BOX
+   ========================================================================== */
+.alma-cueira-banner {
+  position: relative;
+  border-radius: 28px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 60px 48px;
+  margin-top: 40px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+.alma-cueira-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(3, 18, 24, 0.2) 0%, rgba(3, 18, 24, 0.65) 45%, rgba(3, 18, 24, 0.94) 100%);
+  z-index: 1;
+}
+.alma-cueira-banner-content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  max-width: 800px;
+}
+.alma-cueira-tag {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(87, 210, 244, 0.2);
+  border: 1px solid rgba(87, 210, 244, 0.4);
+  color: #57d2f4;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.alma-cueira-banner h2 {
+  font-family: Tusker, "Arial Narrow", Impact, sans-serif;
+  font-size: clamp(2.6rem, 5.5vw, 5rem);
+  line-height: 0.96;
+  text-transform: uppercase;
+  margin: 0 0 16px;
+}
+.alma-cueira-p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0 0 28px;
+}
+.alma-cueira-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 20px;
+}
+.alma-cueira-stats strong {
+  display: block;
+  font-family: Tusker, "Arial Narrow", Impact, sans-serif;
+  font-size: 2.2rem;
+  line-height: 1;
+  color: #57d2f4;
+}
+.alma-cueira-stats span {
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Sustainability Box */
+.alma-sustainability-box {
+  background: rgba(14, 124, 90, 0.08);
+  border: 1px solid rgba(14, 124, 90, 0.24);
+  border-radius: 24px;
+  padding: 44px 40px;
+}
+.alma-sustainability-header {
+  margin-bottom: 28px;
+}
+.alma-sustainability-header h2 {
+  font-family: Tusker, "Arial Narrow", Impact, sans-serif;
+  font-size: clamp(2.2rem, 4vw, 3.6rem);
+  line-height: 1;
+  text-transform: uppercase;
+  margin: 8px 0 10px;
+  color: #143847;
+}
+.alma-sustainability-header p {
+  font-size: 15px;
+  color: #52717a;
+  margin: 0;
+}
+.alma-sustainability-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+.alma-sustainability-grid article {
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(20, 56, 71, 0.08);
+}
+.alma-sustainability-grid strong {
+  display: block;
+  font-size: 13px;
+  color: #0e7c5a;
+  margin-bottom: 8px;
+}
+.alma-sustainability-grid p {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #52717a;
+  margin: 0;
+}
+
+/* Locations Guide in Where to stay */
+.alma-locations-guide {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 30px;
+}
+@media (max-width: 768px) {
+  .alma-locations-guide {
+    grid-template-columns: 1fr;
+  }
+}
+.alma-locations-box {
+  padding: 28px;
+  border-radius: 20px;
+  background: rgba(20, 56, 71, 0.04);
+  border: 1px solid rgba(20, 56, 71, 0.1);
+}
+.alma-locations-box h3 {
+  font-family: Tusker, "Arial Narrow", Impact, sans-serif;
+  font-size: 1.8rem;
+  margin: 0 0 16px;
+  text-transform: uppercase;
+  color: #143847;
+}
+.alma-locations-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.alma-locations-box li {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #52717a;
+}
+.alma-locations-box li strong {
+  color: #143847;
+}
+
+.alma-review-author-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.alma-route-section-header {
+  margin-bottom: 18px;
+}
+.alma-route-kicker {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #0e7c5a;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+.alma-route-section-header h2 {
+  font-family: Tusker, "Arial Narrow", Impact, sans-serif;
+  font-size: 2.2rem;
+  margin: 0;
+  text-transform: uppercase;
+  color: #143847;
+}
