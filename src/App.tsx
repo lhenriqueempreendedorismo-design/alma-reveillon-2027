@@ -346,7 +346,7 @@ function AppContent() {
 function RoutedApp() {
   const pathname = window.location.pathname.replace(/\/$/, '') || '/'
   const subpage = pathname.slice(1) as SubpageKey
-  const validSubpages: SubpageKey[] = ['como-chegar', 'onde-ficar', 'programacao', 'experiencia', 'midia', 'historias', 'boi-people']
+  const validSubpages: SubpageKey[] = ['como-chegar', 'onde-ficar', 'programacao', 'experiencia', 'midia', 'pacotes-alma-com-hospedagem', 'historias', 'boi-people']
   return pathname !== '/' && validSubpages.includes(subpage) ? <Subpage path={subpage} /> : <AppContent />
 }
 

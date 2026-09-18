@@ -1,415 +1,153 @@
-import { ArrowLeft, ArrowRight, Clock3, Compass, MapPin, Plane, Ship, Star, Waves } from 'lucide-react'
-import { FaInstagram } from 'react-icons/fa6'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight, MapPin, Plus, X } from 'lucide-react'
 import CircularMenu from './components/ui/circular-menu'
-import { accommodations } from './data/accommodations'
-import BoiPeopleSection from './components/ui/boi-people-section'
-import PartnersGrid from './components/ui/partners-grid'
+import AccommodationModal from './AccommodationModal'
+import { accommodations, type Accommodation } from './data/accommodations'
+import { islandPhotos } from './data/island-photos'
+import { reviews } from './data/reviews'
+import { TICKETS_URL, trackTicketClick } from './lib/tracking'
+import { useLanguage } from './i18n/LanguageContext'
+import './subpages.css'
 
-export type SubpageKey = 'como-chegar' | 'onde-ficar' | 'programacao' | 'experiencia' | 'midia' | 'historias' | 'boi-people'
+export { reviews } from './data/reviews'
+export type { ReviewItem } from './data/reviews'
+export type SubpageKey = 'como-chegar' | 'onde-ficar' | 'programacao' | 'experiencia' | 'midia' | 'pacotes-alma-com-hospedagem' | 'historias' | 'boi-people'
+type PhotoId = typeof islandPhotos[number]['id']
+const photoUrl = (id: string, size = 1280) => `/media/ilha/${id}-${size}.webp`
+const pageLinks = [
+  ['experiencia', 'Experiência'], ['midia', 'Mídia'], ['programacao', 'Programação'],
+  ['pacotes-alma-com-hospedagem', 'Pacotes ALMA'], ['como-chegar', 'Como chegar'], ['onde-ficar', 'Onde ficar'],
+] as const
 
-const asset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
-
-export interface ReviewItem {
-  quote: string
-  author: string
-  name?: string
-  role?: string
-  verified?: boolean
-  initials?: string
-  tag?: string
+function Photo({ id, className = '', eager = false, sizes = '100vw' }: { id: PhotoId; className?: string; eager?: boolean; sizes?: string }) {
+  const photo = islandPhotos.find(p => p.id === id)!
+  return <img alt={photo.alt} className={className} src={photoUrl(id)} srcSet={[640, 1280, 2000].map(w => `${photoUrl(id, w)} ${w}w`).join(', ')} sizes={sizes} width={photo.width} height={photo.height} loading={eager ? 'eager' : 'lazy'} {...{ fetchpriority: eager ? 'high' : 'auto' }} decoding="async" />
 }
 
-export const reviews: ReviewItem[] = [
-  {
-    quote: 'Foi tudooooo 🙌❤️',
-    author: 'brunamarquezine',
-    name: 'Bruna Marquezine',
-    role: 'Atriz & Convidada',
-    verified: true,
-    initials: 'BM',
-    tag: 'Boipeba',
-  },
-  {
-    quote: 'pra ficar na memória!! 👌',
-    author: 'bertolazzi',
-    name: 'Carlos Bertolazzi',
-    role: 'Chef & Apresentador',
-    verified: true,
-    initials: 'CB',
-    tag: 'Edição Anterior',
-  },
-  {
-    quote: 'O MELHOR EVENTO DO NORDESTE',
-    author: 'ricardobrautigam',
-    name: 'Ricardo Brautigam',
-    role: 'Diretor Criativo',
-    verified: true,
-    initials: 'RB',
-    tag: 'Boipeba',
-  },
-  {
-    quote: 'Energia surreal!!! Foi maravilhoso e perfeito cada momento 🤍',
-    author: 'polly.penoni',
-    name: 'Pollyanna Penoni',
-    role: 'Hóspede ALMA',
-    verified: false,
-    initials: 'PP',
-    tag: 'Praia da Cueira',
-  },
-  {
-    quote: 'Foi sensacional 🏝️😍🙏🇧🇷',
-    author: 'belanogueira__',
-    name: 'Bela Nogueira',
-    role: 'Hóspede ALMA',
-    verified: false,
-    initials: 'BN',
-    tag: 'Boipeba',
-  },
-  {
-    quote: 'Saudade desses dias já! 😢 foi incrível!! 🔥',
-    author: 'lilotune',
-    name: 'Lilo Tune',
-    role: 'Convidado ALMA',
-    verified: false,
-    initials: 'LT',
-    tag: 'Edição Anterior',
-  },
-  {
-    quote: 'Sem palavras! Eita como foi incrível 🤍',
-    author: 'camilagondimfonseca',
-    name: 'Camila Gondim',
-    role: 'Hóspede ALMA',
-    verified: false,
-    initials: 'CG',
-    tag: 'Boipeba',
-  },
-  {
-    quote: 'Bom demais, ta malucooo 🙌🙌',
-    author: 'joaopedroblemos',
-    name: 'João Pedro Lemos',
-    role: 'Convidado ALMA',
-    verified: false,
-    initials: 'JP',
-    tag: 'Edição Anterior',
-  },
-  {
-    quote: 'Eu amei o @almareveillonboipeba, foi demais!!!! 😍😍😍😍',
-    author: 'julianitzsche',
-    name: 'Julia Nitzsche',
-    role: 'Hóspede ALMA',
-    verified: false,
-    initials: 'JN',
-    tag: 'Praia da Cueira',
-  },
-  {
-    quote: 'Foi épico!!!',
-    author: 'kaicms',
-    name: 'Kaique Silva',
-    role: 'Convidado ALMA',
-    verified: false,
-    initials: 'KS',
-    tag: 'Boipeba',
-  },
-]
+function TicketLink({ label = 'Viver o ALMA', location }: { label?: string; location: string }) {
+  const { language } = useLanguage()
+  return <a className="ticket" href={TICKETS_URL} target="_blank" rel="noreferrer" onClick={() => trackTicketClick({ ctaLocation: location, ctaText: label, language })}><span className="ticket-label">{label}</span><span className="ticket-icon-wrapper"><ArrowUpRight size={17} /></span></a>
+}
 
-const nights = [
-  ['27/ — DOMINGO', 'RODA DE PRAIA COM +5521', '23H - 06H · Open Bar Premium'],
-  ['28/ — SEGUNDA', 'ISSO NÃO É UM SUNRISE', '23H - 06H · Open Bar Premium'],
-  ['29/ — TERÇA', 'MOMO & BIRIBIRI', '23H - 06H · Open Bar Premium'],
-  ['30/ — QUARTA', 'LUAU DO DDP', '23H - 06H · Open Bar Premium'],
-  ['31/ — QUINTA', 'ALMA REVEILLON', '22H - 06H · Open Bar Premium · A Grande Virada'],
-]
-
-function Shell({ eyebrow, title, children }: { eyebrow: string; title: string; children: React.ReactNode }) {
-  return (
-    <main className="alma-subpage">
-      <header className="nav nav--hero alma-subpage-nav">
-        <a href="/" className="alma-subpage-back" aria-label="Voltar para a home"><ArrowLeft size={20} /></a>
-        <a className="wordmark wordmark--hero" href="/" aria-label="ALMA Réveillon 2027">
-          <img className="wordmark-layer wordmark-layer--dark" src={asset('/brand/alma-logo-dark.png')} alt="ALMA Réveillon 2027" />
-          <img className="wordmark-layer wordmark-layer--diff" src={asset('/brand/alma-logo-trimmed.png')} alt="ALMA Réveillon 2027" />
-        </a>
-        <CircularMenu />
-      </header>
-      <section className="alma-subpage-hero">
-        <span>{eyebrow}</span>
-        <h1>{title}</h1>
+function Shell({ path, label, title, accent, photo, intro, children, gallery = false }: { path: SubpageKey; label: string; title: string; accent?: string; photo: PhotoId; intro?: string; children: React.ReactNode; gallery?: boolean }) {
+  return <div className={`island-page${gallery ? ' island-page--gallery' : ''}`} lang="pt-BR">
+    <a className="island-skip" href="#conteudo">Pular para o conteúdo</a>
+    <header className="island-header">
+      <a className="island-back" href="/" aria-label="Voltar à página inicial"><ArrowLeft size={18} /><span>Início</span></a>
+      <a className="island-logo" href="/" aria-label="ALMA Réveillon 2027 — início"><img src="/brand/alma-logo-dark.png" alt="ALMA Réveillon" width="150" height="70" /></a>
+      <CircularMenu />
+    </header>
+    <main>
+      <section className="island-hero" aria-labelledby="page-title">
+        <Photo id={photo} eager className="island-hero__image" />
+        <div className="island-hero__shade" />
+        <div className="island-hero__copy"><span className="island-kicker">ALMA RÉVEILLON 2027 · {label}</span><h1 id="page-title">{title}{accent && <em>{accent}</em>}</h1>{intro && <p>{intro}</p>}</div>
+        <div className="island-hero__bottom"><span>ILHA DE BOIPEBA — BAHIA</span><a href="#conteudo" aria-label={gallery ? 'Ver galeria de fotos' : 'Explorar esta página'}>{gallery ? 'Ver galeria' : 'Explorar'}<ArrowDown size={16} /></a><span>27 — 31 DEZ 2026</span></div>
       </section>
-      <div className="alma-subpage-content">{children}</div>
-      <footer className="alma-subpage-footer"><a href="/">ALMA Réveillon 2027</a><span>Ilha de Boipeba · Bahia</span></footer>
+      <nav className="island-nav" aria-label="Páginas do ALMA">{pageLinks.map(([key, text]) => <a key={key} href={`/${key}`} aria-current={key === path ? 'page' : undefined}>{text}</a>)}</nav>
+      <div id="conteudo" className="island-content">{children}</div>
     </main>
-  )
+    <footer className="island-footer"><a href="/" aria-label="ALMA — página inicial"><img src="/brand/alma-logo-dark.png" alt="ALMA" width="110" height="52" /></a><span>Boipeba, Bahia.<br />Um lugar para sentir.</span><a href="https://www.instagram.com/almareveillonboipeba/" target="_blank" rel="noreferrer">Instagram <ArrowUpRight size={15} /></a></footer>
+  </div>
 }
 
-function HowToArrivePage() {
-  return (
-    <Shell eyebrow="COMO CHEGAR AO PARAÍSO" title="Rotas para a Ilha de Boipeba">
-      <p className="alma-subpage-lead">
-        A Ilha de Boipeba é um destino preservado onde não entram carros. A travessia pelo ar ou pelo mar já faz parte do ritual de desaceleração. Escolha a sua melhor rota de chegada.
-      </p>
-
-      {/* Saindo de Salvador */}
-      <div className="alma-route-section-header">
-        <span className="alma-route-kicker">SAINDO DE SALVADOR</span>
-        <h2>Opções de translado</h2>
-      </div>
-
-      <div className="alma-route-grid">
-        <article>
-          <Plane size={24} className="text-[#57d2f4]" />
-          <small>VOO COMERCIAL · MAIS RÁPIDO</small>
-          <h2>Voo Comercial</h2>
-          <strong>35 min</strong>
-          <p>Operado pela Abaeté Linhas Aéreas saindo do Aeroporto Internacional de Salvador direto para a pista em frente à ilha.</p>
-        </article>
-
-        <article>
-          <Ship size={24} className="text-[#57d2f4]" />
-          <small>TRANSFER MARÍTIMO · PELO MAR</small>
-          <h2>Transfer Marítimo</h2>
-          <strong>2h</strong>
-          <p>Uber até a Marina Porto de Salvador &gt; Lancha rápida direto para o cais de Boipeba pelo mar aberto.</p>
-        </article>
-
-        <article>
-          <MapPin size={24} className="text-[#57d2f4]" />
-          <small>TRANSFER FRETADO · CONFORTÁVEL</small>
-          <h2>Transfer Semi-Terrestre</h2>
-          <strong>5h</strong>
-          <p>Translado fretado completo com van e lancha rápida combinados, cuidando de toda a logística até a ilha.</p>
-        </article>
-
-        <article>
-          <Ship size={24} className="text-[#57d2f4]" />
-          <small>TRAVESSIA CONVENCIONAL · ECONÔMICA</small>
-          <h2>Travessia Convencional</h2>
-          <strong>4h30</strong>
-          <p>Uber ao Terminal de Mar Grande &gt; Barco à Itaparica &gt; Táxi a Valença &gt; Lancha rápida até Boipeba.</p>
-        </article>
-
-        <article>
-          <Ship size={24} className="text-[#57d2f4]" />
-          <small>TRAVESSIA FERRY BOAT</small>
-          <h2>Travessia Ferry Boat</h2>
-          <strong>5h</strong>
-          <p>Uber ao Terminal São Joaquim &gt; Ferry a Bom Despacho &gt; Táxi ou ônibus até Valença &gt; Lancha até Boipeba.</p>
-        </article>
-      </div>
-
-      {/* Saindo de Morro de SP */}
-      <div className="alma-route-section-header" style={{ marginTop: '50px' }}>
-        <span className="alma-route-kicker">SAINDO DE MORRO DE SÃO PAULO</span>
-        <h2>Opções de translado</h2>
-      </div>
-
-      <div className="alma-route-grid">
-        <article>
-          <Ship size={24} className="text-[#80eeb4]" />
-          <small>LANCHA FRETADA · NÁUTICO</small>
-          <h2>Lancha Fretada</h2>
-          <strong>50 min</strong>
-          <p>Trajeto náutico privativo saindo da Terceira Praia de Morro de SP direto ao cais de Boipeba.</p>
-        </article>
-
-        <article>
-          <Compass size={24} className="text-[#80eeb4]" />
-          <small>JEEP + LANCHA · OPÇÃO MAIS SEGURA</small>
-          <h2>Jeep Lancha</h2>
-          <strong>1h</strong>
-          <p>Jeep off-road até a Fazenda Pontal + travessia de lancha protegida de 5 minutos até Boipeba.</p>
-        </article>
-      </div>
-
-      {/* Translados e Passeios Locais */}
-      <section className="alma-info-panel" style={{ marginTop: '50px' }}>
-        <span>TRANSLADO E PASSEIOS LOCAIS RECOMENDADOS</span>
-        <h2>Explore a ilha com confiança.</h2>
-        <p>
-          Contatos e agências locais recomendadas pelo ALMA:<br />
-          <strong>@AGENCIADANTOUR • @BAHIA TERRA_TURISMO • @BOIPEBABEACH_COCOLOUCO • @LANCHALIBERDADE_ • @MARTOURBOIPEBA</strong>
-        </p>
-        <a href="https://www.google.com/maps/search/?api=1&query=Praia+da+Cueira,+Boipeba,+BA" target="_blank" rel="noreferrer">
-          Abrir Praia da Cueira no mapa <ArrowRight size={15} />
-        </a>
-      </section>
-    </Shell>
-  )
+function SectionHeading({ label, title, children }: { label: string; title: string; children?: React.ReactNode }) {
+  return <div className="island-section-heading"><div><span className="island-kicker">{label}</span><h2>{title}</h2></div>{children && <p>{children}</p>}</div>
 }
-
-function WhereToStayPage() {
-  return (
-    <Shell eyebrow="LOCAIS PERTO DA GENTE" title="Onde ficar em Boipeba">
-      <p className="alma-subpage-lead">
-        Boipeba oferece vilas charmosas e praias deslumbrantes. Conheça as melhores localizações para se hospedar perto do ALMA e os bairros mais convenientes.
-      </p>
-
-      <div className="alma-locations-guide">
-        <div className="alma-locations-box">
-          <h3>Melhores Localizações na Ilha</h3>
-          <ul>
-            <li><strong>Vila de Boipeba:</strong> Centro charmoso, restaurantes, comércio e agito noturno.</li>
-            <li><strong>Marina ou Rua do Porto:</strong> Perto do cais e chegada das lanchas, fácil acesso aos passeios.</li>
-            <li><strong>Rua das Pedras:</strong> Rua charmosa com opções gastronômicas e pousadas aconchegantes.</li>
-            <li><strong>Praça de Santo Antônio:</strong> Ponto histórico no coração da vila.</li>
-            <li><strong>Rua do Ribeirinho:</strong> Tranquilidade à beira do rio.</li>
-            <li><strong>Tiririca ou Areal:</strong> Bairros mais econômicos pela distância das praias.</li>
-          </ul>
-        </div>
-
-        <div className="alma-locations-box">
-          <h3>Praias &amp; Proximidades</h3>
-          <ul>
-            <li><strong>Praia da Cueira:</strong> Palco sagrado do ALMA Réveillon, coqueirais e areia dourada.</li>
-            <li><strong>Boca da Barra:</strong> Próxima à vila, mar calmo e pôr do sol inesquecível.</li>
-            <li><strong>Tassimirim e arredores:</strong> Arrecifes de corais, piscinas naturais e sossego.</li>
-            <li><strong>Moreré:</strong> Famosa por suas piscinas naturais cristalinas e atmosfera rústica.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="alma-stay-grid" style={{ marginTop: '40px' }}>
-        {accommodations.map((item) => (
-          <article className="alma-stay-card" key={item.id}>
-            <img src={item.coverImage} alt={item.name} />
-            <div>
-              <span className={`alma-status ${item.status === 'available' ? 'is-available' : ''}`}>{item.statusLabel}</span>
-              <h2>{item.name}</h2>
-              <p>{item.description}</p>
-              <small>{item.location}</small>
-              <ul>{item.amenities.slice(0, 4).map((a) => <li key={a}>{a}</li>)}</ul>
-              <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.mapsQuery)}`} target="_blank" rel="noreferrer">
-                Ver localização <ArrowRight size={14} />
-              </a>
-            </div>
-          </article>
-        ))}
-      </div>
-    </Shell>
-  )
-}
-
-function ProgramPage() {
-  return (
-    <Shell eyebrow="PROGRAMAÇÃO OFICIAL" title="Cinco noites para viver a ilha">
-      <p className="alma-subpage-lead">
-        De 27 a 31 de dezembro, cinco festas temáticas e exclusivas com Open Bar Premium completo na Praia da Cueira.
-      </p>
-
-      <div className="alma-night-list">
-        {nights.map(([date, name, desc]) => (
-          <article key={date}>
-            <span>{date}</span>
-            <div>
-              <h2>{name}</h2>
-              <p>{desc}</p>
-            </div>
-            <Clock3 size={20} className="text-[#57d2f4]" />
-          </article>
-        ))}
-      </div>
-
-      <div style={{ marginTop: '60px' }}>
-        <PartnersGrid title="PATROCINADORES & MARCAS DO OPEN BAR" />
-      </div>
-    </Shell>
-  )
+function NextChapter({ label, title, href, image }: { label: string; title: string; href: string; image: PhotoId }) {
+  return <a className="island-next" href={href}><Photo id={image} /><div><span className="island-kicker">{label}</span><h2>{title}</h2><span className="island-next__arrow"><ArrowUpRight size={26} /></span></div></a>
 }
 
 function ExperiencePage() {
-  return (
-    <Shell eyebrow="A EXPERIÊNCIA" title="Aqui o luxo é outro.">
-      <p className="alma-subpage-lead">
-        Boipeba é uma área de proteção ambiental (APA), reserva da biosfera e patrimônio da humanidade pela UNESCO. Uma ilha paradisíaca na Bahia, onde os carros ficam para trás e chegar é só o começo de uma aventura inesquecível.
-      </p>
-
-      {/* Bloco O festival acontece na praia da Cueira com background da imagem solicitada */}
-      <div
-        className="alma-cueira-banner"
-        style={{
-          backgroundImage: `url(${asset('/media/Boipeba-Island-Brazil-Best-time.jpg')})`,
-        }}
-      >
-        <div className="alma-cueira-banner-overlay" />
-        <div className="alma-cueira-banner-content">
-          <span className="alma-cueira-tag">PRAIA DA CUEIRA · ILHA DE BOIPEBA</span>
-          <h2>O festival acontece na Praia da Cueira.</h2>
-          <p className="alma-cueira-p">
-            Aqueles que buscam novos ares e um destino pé na areia celebram a época mais charmosa do ano em uma ilha paradisíaca no coração da Bahia. Repleta de belezas naturais incomparáveis, encanto e poesia, com uma vibe intimista e atmosfera hippie chic única no Brasil.
-          </p>
-          <div className="alma-cueira-stats">
-            <div><strong>5 Noites</strong><span>Open Bar Premium</span></div>
-            <div><strong>5 Edições</strong><span>2016, 2017, 2018, 2019 e 2023</span></div>
-            <div><strong>~2.000</strong><span>Pessoas anualmente</span></div>
-            <div><strong>0 Carros</strong><span>Pés na areia e quadriciclos</span></div>
-          </div>
-        </div>
-      </div>
-
-      {/* Sustentabilidade */}
-      <section className="alma-sustainability-box" style={{ marginTop: '50px' }}>
-        <div className="alma-sustainability-header">
-          <span className="kicker">SUSTENTABILIDADE &amp; PRESERVAÇÃO</span>
-          <h2>Menos Lixo = Mais Animais</h2>
-          <p>Nosso compromisso inegociável com a Ilha de Boipeba e a comunidade local.</p>
-        </div>
-        <div className="alma-sustainability-grid">
-          <article>
-            <strong>1 Copo &amp; 1 Pulseira</strong>
-            <p>Distribuição de apenas 1 copo retornável e 1 pulseira por cliente para os 5 dias de festival, minimizando a geração de resíduos.</p>
-          </article>
-          <article>
-            <strong>Coleta Seletiva Responsável</strong>
-            <p>Destinação adequada no continente de todos os resíduos gerados no complexo, realizada pela empresa parceira Copa Engenharia Ambiental.</p>
-          </article>
-          <article>
-            <strong>100% Reciclagem de Latinhas</strong>
-            <p>Doação integral de todas as latinhas de alumínio para os catadores locais, fomentando a renda de famílias da região.</p>
-          </article>
-          <article>
-            <strong>Limpeza &amp; Compensação</strong>
-            <p>Operação minuciosa de limpeza pós-evento na praia e arredores, além da compra de materiais de compensação ambiental junto à Prefeitura de Cairu-BA.</p>
-          </article>
-        </div>
-      </section>
-
-      {/* Boi People Showcase */}
-      <div style={{ marginTop: '60px' }}>
-        <BoiPeopleSection />
-      </div>
-    </Shell>
-  )
+  return <Shell path="experiencia" label="A experiência" title="Aqui, o luxo" accent="é outro." photo="costa" intro="O mar por perto. Os pés na areia. E a liberdade de viver o tempo da ilha.">
+    <section className="island-section island-editorial" id="a-ilha"><div className="island-editorial__copy"><span className="island-kicker">01 / O DESTINO</span><h2>Uma ilha.<br /><em>Outro ritmo.</em></h2><p>Entre coqueirais, caminhos de areia e o azul do mar, Boipeba convida a desacelerar. O dia começa sem pressa e termina onde o sol encontra a água.</p><a className="island-text-link" href="/midia">Um olhar sobre a ilha <ArrowUpRight size={17} /></a></div><figure><Photo id="piscinas" sizes="(max-width: 700px) 100vw, 55vw" /><figcaption>Água, luz e os desenhos da maré.</figcaption></figure></section>
+    <section className="island-panoramic"><Photo id="coqueiral" /><div><span className="island-kicker">02 / O ENCONTRO</span><h2>O dia é da ilha.<br /><em>A noite é do ALMA.</em></h2><p>Cinco noites na Praia da Cueira, com música, Open Bar Premium e encontros que atravessam a virada.</p><a className="island-text-link" href="/programacao">Conhecer as noites <ArrowRight size={17} /></a></div></section>
+    <section className="island-section"><SectionHeading label="03 / CUIDAR DO QUE ENCANTA" title="A beleza também pede cuidado.">Leve boas memórias. Deixe a ilha tão bonita quanto a encontrou.</SectionHeading><div className="island-principles"><article><span>01</span><h3>Menos descartáveis</h3><p>Reutilize seu copo durante as festas e descarte os resíduos nos locais indicados.</p></article><article><span>02</span><h3>Respeito à natureza</h3><p>Preserve a vegetação, os recifes e os caminhos da ilha.</p></article><article><span>03</span><h3>Valorize quem é daqui</h3><p>Conheça os sabores, o trabalho e a hospitalidade da comunidade local.</p></article></div></section>
+    <NextChapter label="SUA ESTADIA" title="Fique mais um pouco." href="/pacotes-alma-com-hospedagem" image="reflexos" />
+  </Shell>
 }
 
-function StoriesPage() {
-  return (
-    <Shell eyebrow="BOI PEOPLE" title="Aqui o luxo é outro.">
-      <p className="alma-subpage-lead">
-        Comentários e momentos de quem viveu a energia do ALMA Réveillon na mágica Ilha de Boipeba.
-      </p>
+function GalleryPage() {
+  const [active, setActive] = useState<number | null>(null)
+  const dialog = useRef<HTMLDialogElement>(null)
+  const close = useCallback(() => { dialog.current?.close(); setActive(null) }, [])
+  const opened = active !== null
+  useEffect(() => {
+    if (!opened) return
+    dialog.current?.showModal()
+    const previous = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = previous }
+  }, [opened])
+  const move = (direction: number) => setActive(index => index === null ? null : (index + direction + islandPhotos.length) % islandPhotos.length)
+  return <Shell path="midia" label="Galeria" title="Boipeba," accent="em todos os sentidos." photo="piscinas" gallery>
+    <section className="island-section island-gallery-section" aria-label="Galeria de Boipeba"><div className="island-gallery-heading"><span className="island-kicker">UM OLHAR SOBRE O PARAÍSO</span><span>{String(islandPhotos.length).padStart(2, '0')} fotografias</span></div><div className="island-gallery">{islandPhotos.map((photo, i) => <button type="button" key={photo.id} className="island-gallery__item" onClick={() => setActive(i)} aria-label={`Ampliar: ${photo.alt}`} aria-haspopup="dialog"><Photo id={photo.id} sizes="(max-width: 600px) 50vw, (max-width: 1000px) 50vw, 33vw" /><span className="island-gallery__zoom"><Plus size={20} /></span></button>)}</div></section>
+    <dialog className="island-lightbox" ref={dialog} onCancel={close} onClose={() => setActive(null)} onClick={e => { if (e.target === e.currentTarget) close() }} onKeyDown={e => { if (e.key === 'ArrowLeft') { e.preventDefault(); move(-1) } if (e.key === 'ArrowRight') { e.preventDefault(); move(1) } }} aria-label="Visualizador de fotografias de Boipeba"><button className="island-lightbox__close" type="button" aria-label="Fechar fotografia" onClick={close}><X /></button>{active !== null && <><button className="island-lightbox__prev" type="button" aria-label="Fotografia anterior" onClick={() => move(-1)}><ChevronLeft /></button><figure><img key={islandPhotos[active].id} src={photoUrl(islandPhotos[active].id, 2000)} alt={islandPhotos[active].alt} /><figcaption aria-live="polite"><span>{islandPhotos[active].alt}</span><span>{active + 1} / {islandPhotos.length}</span></figcaption></figure><button className="island-lightbox__next" type="button" aria-label="Próxima fotografia" onClick={() => move(1)}><ChevronRight /></button></>}</dialog>
+  </Shell>
+}
 
-      <BoiPeopleSection />
+const nights = [
+  { day: '27', week: 'DOMINGO', title: 'Roda de Praia', subtitle: 'com +5521', time: '23h — 06h' },
+  { day: '28', week: 'SEGUNDA', title: 'Isso Não É Um Sunrise', subtitle: '', time: '23h — 06h' },
+  { day: '29', week: 'TERÇA', title: 'Momo & Biribiri', subtitle: '', time: '23h — 06h' },
+  { day: '30', week: 'QUARTA', title: 'Luau do DDP', subtitle: '', time: '23h — 06h' },
+  { day: '31', week: 'QUINTA', title: 'ALMA Réveillon', subtitle: 'A grande virada', time: '22h — 06h' },
+]
+function ProgramPage() {
+  return <Shell path="programacao" label="Programação" title="Cinco noites." accent="Uma nova energia." photo="dourado" intro="De 27 a 31 de dezembro, a Praia da Cueira é o nosso ponto de encontro.">
+    <section className="island-section"><SectionHeading label="DEZEMBRO 2026 / JANEIRO 2027" title="Cada noite, uma história.">Open Bar Premium nas cinco festas. Escolha como viver a sua virada.</SectionHeading><div className="island-schedule">{nights.map(n => <article key={n.day}><div className="island-schedule__date"><strong>{n.day}</strong><span>DEZ<br />{n.week}</span></div><div><h2>{n.title}</h2>{n.subtitle && <p>{n.subtitle}</p>}</div><span className="island-schedule__time">{n.time}</span></article>)}</div><div className="island-booking-row"><span><MapPin size={16} /> Praia da Cueira · Boipeba</span><TicketLink label="Escolher meus ingressos" location="programacao_footer" /></div></section>
+    <NextChapter label="ENTRE UMA NOITE E OUTRA" title="Viva o tempo da ilha." href="/experiencia" image="horizonte" />
+  </Shell>
+}
 
-      <div className="alma-review-grid" style={{ marginTop: '50px' }}>
-        {reviews.map((review) => (
-          <article key={review.author + review.quote}>
-            <Star size={16} className="text-[#57d2f4]" />
-            <blockquote>“{review.quote}”</blockquote>
-            <div className="alma-review-author-row">
-              <FaInstagram size={14} className="text-[#57d2f4]" />
-              <span>@{review.author}</span>
-            </div>
-            {review.name && <small>{review.name} · {review.role}</small>}
-          </article>
-        ))}
-      </div>
-    </Shell>
-  )
+function PackagesPage() {
+  const [selected, setSelected] = useState<Accommodation | null>(null)
+  const close = useCallback(() => setSelected(null), [])
+  const available = accommodations.filter(a => a.status === 'available')
+  const soldOut = accommodations.filter(a => a.status === 'sold-out')
+  const card = (item: Accommodation) => <article className="island-stay" key={item.id}><button className="island-stay__visual" type="button" onClick={() => setSelected(item)} aria-label={`Ver fotos e detalhes de ${item.name}`}><img src={item.coverImage} alt={item.name} loading="lazy" width="720" height="540" /><span>{item.status === 'available' ? item.period : 'Esgotado'}</span><span className="island-stay__plus"><Plus size={20} /></span></button><div className="island-stay__body"><span className="island-kicker">{item.badges.join(' · ')}</span><h3>{item.name}</h3><p>{item.description}</p><span className="island-stay__location"><MapPin size={14} />{item.location}</span><button className="island-text-link" type="button" onClick={() => setSelected(item)}>Fotos e detalhes <ArrowUpRight size={16} /></button></div></article>
+  return <Shell path="pacotes-alma-com-hospedagem" label="Pacotes com hospedagem" title="Seu réveillon." accent="Sua casa na ilha." photo="reflexos" intro="Encontre sua hospedagem e planeje os dias de ALMA em Boipeba.">
+    <section className="island-section"><SectionHeading label="PACOTES ALMA COM HOSPEDAGEM" title="Escolha onde desacelerar.">Compare as acomodações e os períodos. Valores, disponibilidade e itens incluídos devem ser conferidos no momento da compra.</SectionHeading><div className="island-stays">{available.map(card)}</div><div className="island-booking-row"><a className="island-text-link" href="/onde-ficar">Conhecer as regiões da ilha <ArrowUpRight size={16} /></a><TicketLink label="Consultar pacotes" location="pacotes_footer" /></div>{soldOut.length > 0 && <details className="island-soldout"><summary>Outras acomodações · {soldOut.length} esgotadas <Plus size={18} /></summary><div className="island-stays">{soldOut.map(card)}</div></details>}</section>
+    <NextChapter label="A VIAGEM COMEÇA AQUI" title="Encontre o seu caminho." href="/como-chegar" image="encontro" />
+    <AccommodationModal accommodation={selected} ticketsUrl={TICKETS_URL} onClose={close} variant="island" />
+  </Shell>
+}
+
+function WhereToStayPage() {
+  const places: { name: string; tag: string; image: PhotoId; description: string }[] = [
+    { name: 'Vila de Boipeba', tag: 'RESTAURANTES & VIDA LOCAL', image: 'vila', description: 'Para quem quer estar perto do comércio, dos restaurantes e do movimento da vila. A região do cais facilita a chegada.' },
+    { name: 'Boca da Barra', tag: 'ENTRE O RIO E O MAR', image: 'entardecer', description: 'Uma estadia perto da vila, com a paisagem dos barcos e o pôr do sol como companhia.' },
+    { name: 'Cueira & Tassimirim', tag: 'PRAIA & NATUREZA', image: 'coqueiral', description: 'Coqueirais, caminhos de areia e dias de praia. A Cueira é o endereço das festas do ALMA.' },
+    { name: 'Moreré', tag: 'OUTRO RITMO', image: 'horizonte', description: 'Para estender os dias de descanso e conhecer outra parte da ilha. Combine os deslocamentos para as festas antes de reservar.' },
+  ]
+  return <Shell path="onde-ficar" label="Onde ficar" title="Um refúgio" accent="do seu jeito." photo="horizonte" intro="Perto da vila, à beira-mar ou entre coqueirais. Descubra qual região combina com a sua viagem.">
+    <section className="island-section"><SectionHeading label="GUIA DE LOCALIZAÇÃO" title="A ilha tem muitos ritmos.">Escolha a região pensando nos seus dias de praia e no trajeto até a Praia da Cueira.</SectionHeading><div className="island-places">{places.map((p, i) => <article key={p.name}><figure><Photo id={p.image} sizes="(max-width: 700px) 100vw, 50vw" /><span>0{i + 1}</span></figure><span className="island-kicker">{p.tag}</span><h3>{p.name}</h3><p>{p.description}</p><a className="island-text-link" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ', Boipeba, Bahia')}`} target="_blank" rel="noreferrer">Ver região no mapa <ArrowUpRight size={16} /></a></article>)}</div><div className="island-note"><span className="island-kicker">ANTES DE RESERVAR</span><p>Confirme com a hospedagem a distância até a Cueira e as opções de deslocamento à noite.</p></div></section>
+    <NextChapter label="ESCOLHA SUA ESTADIA" title="Conheça os pacotes ALMA." href="/pacotes-alma-com-hospedagem" image="areia" />
+  </Shell>
+}
+
+function HowToArrivePage() {
+  return <Shell path="como-chegar" label="Como chegar" title="O caminho já" accent="faz parte da viagem." photo="encontro" intro="Planeje sua chegada a Boipeba e deixe espaço para aproveitar a travessia.">
+    <section className="island-section"><SectionHeading label="DESTINO / ILHA DE BOIPEBA, BAHIA" title="Seu caminho até a ilha.">Combine a chegada e a volta com o operador escolhido antes de fechar os horários da sua viagem.</SectionHeading><div className="island-arrival"><figure><Photo id="barco" sizes="(max-width: 800px) 100vw, 45vw" /><figcaption>A viagem ganha outro ritmo sobre a água.</figcaption></figure><div className="island-routes">
+      <details open><summary><span>01</span><h3>Saindo de Salvador</h3><Plus size={18} /></summary><div><p>A viagem pode combinar travessia, trecho terrestre e lancha até Boipeba.</p><ol><li>Travessia para Itaparica.</li><li>Deslocamento terrestre até Valença.</li><li>Lancha até o cais de Boipeba.</li></ol><p>Para transfer completo, trajeto marítimo direto ou opção aérea, consulte a operação disponível para as suas datas.</p></div></details>
+      <details><summary><span>02</span><h3>Saindo de Valença</h3><Plus size={18} /></summary><div><p>A chegada à ilha é feita de lancha. Confirme o terminal de embarque, a disponibilidade e o último horário de saída com o operador.</p></div></details>
+      <details><summary><span>03</span><h3>Saindo de Morro de São Paulo</h3><Plus size={18} /></summary><div><p>Consulte as opções de lancha fretada ou de trajeto terrestre até o ponto de travessia para Boipeba. Combine embarque e bagagem antecipadamente.</p></div></details>
+      <details><summary><span>04</span><h3>Ao chegar à ilha</h3><Plus size={18} /></summary><div><p>Avise sua hospedagem sobre o horário de chegada. Combine o caminho até sua acomodação e os deslocamentos para a Praia da Cueira.</p></div></details>
+    </div></div><div className="island-note"><span className="island-kicker">VIAJE SEM PRESSA</span><p>Marés, clima e operação podem alterar os trajetos. Reserve uma margem entre a travessia e seus voos.</p><a className="island-text-link" href="https://www.google.com/maps/search/?api=1&query=Praia+da+Cueira,+Boipeba,+BA" target="_blank" rel="noreferrer">Praia da Cueira no mapa <ArrowUpRight size={16} /></a></div></section>
+    <NextChapter label="SEU PRÓXIMO PASSO" title="Encontre seu lugar na ilha." href="/onde-ficar" image="costa" />
+  </Shell>
+}
+
+function StoriesPage({ path }: { path: SubpageKey }) {
+  return <Shell path={path} label="Boi People" title="Encontros que" accent="ficam na memória." photo="entardecer"><section className="island-section"><SectionHeading label="QUEM VIVEU O ALMA" title="A ilha fica na gente." /><div className="island-quotes">{reviews.map(r => <blockquote key={r.author}><p>“{r.quote}”</p><cite>@{r.author}</cite></blockquote>)}</div></section><NextChapter label="FOTOGRAFIAS DA ILHA" title="Reencontre Boipeba." href="/midia" image="piscinas" /></Shell>
 }
 
 export default function Subpage({ path }: { path: SubpageKey }) {
   if (path === 'como-chegar') return <HowToArrivePage />
   if (path === 'onde-ficar') return <WhereToStayPage />
   if (path === 'programacao') return <ProgramPage />
-  if (path === 'midia' || path === 'historias' || path === 'boi-people') return <StoriesPage />
+  if (path === 'pacotes-alma-com-hospedagem') return <PackagesPage />
+  if (path === 'midia') return <GalleryPage />
+  if (path === 'historias' || path === 'boi-people') return <StoriesPage path={path} />
   return <ExperiencePage />
 }

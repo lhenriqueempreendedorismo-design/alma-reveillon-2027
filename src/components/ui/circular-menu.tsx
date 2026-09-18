@@ -58,11 +58,11 @@ export default function CircularMenu({
 
   const navItems: NavItem[] = [
     { number: '01', label: t.nav.items.experience.label, href: '/experiencia', tagline: t.nav.items.experience.tagline },
-    { number: '02', label: t.nav.items.media.label, href: '#midia', tagline: t.nav.items.media.tagline },
+    { number: '02', label: t.nav.items.media.label, href: '/midia', tagline: t.nav.items.media.tagline },
     { number: '03', label: t.nav.items.lineup.label, href: '/programacao', tagline: t.nav.items.lineup.tagline },
-    { number: '04', label: t.nav.items.lodgingPackages.label, href: '/onde-ficar', tagline: t.nav.items.lodgingPackages.tagline },
+    { number: '04', label: t.nav.items.lodgingPackages.label, href: '/pacotes-alma-com-hospedagem', tagline: t.nav.items.lodgingPackages.tagline },
     { number: '05', label: t.nav.items.tickets.label, href: ticketsUrl, tagline: t.nav.items.tickets.tagline, external: true },
-    { number: '06', label: t.nav.items.island.label, href: '/experiencia', tagline: t.nav.items.island.tagline },
+    { number: '06', label: t.nav.items.island.label, href: '/experiencia#a-ilha', tagline: t.nav.items.island.tagline },
     { number: '07', label: t.nav.items.howToArrive.label, href: '/como-chegar', tagline: t.nav.items.howToArrive.tagline },
     { number: '08', label: t.nav.items.whereToStay.label, href: '/onde-ficar', tagline: t.nav.items.whereToStay.tagline },
     { number: '09', label: t.nav.items.faq.label, href: '/#faq', tagline: t.nav.items.faq.tagline },
@@ -90,15 +90,31 @@ export default function CircularMenu({
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // Fecha no ESC
+  // Keep keyboard navigation inside the open menu, including its close button.
   useEffect(() => {
+    if (!isOpen) return
+    const previous = document.activeElement as HTMLElement | null
+    const timer = window.setTimeout(() => {
+      document.querySelector<HTMLElement>('.circular-menu__panel a')?.focus({ preventScroll: true })
+    }, 100)
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === 'Escape') {
         setIsOpen(false)
+      }
+      if (e.key === 'Tab') {
+        const controls = Array.from(document.querySelectorAll<HTMLElement>('.circular-menu-btn, .circular-menu__panel a[href], .circular-menu__panel button'))
+        const first = controls[0]
+        const last = controls[controls.length - 1]
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus() }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus() }
       }
     }
     window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    return () => {
+      window.clearTimeout(timer)
+      window.removeEventListener('keydown', handleKeyDown)
+      previous?.focus({ preventScroll: true })
+    }
   }, [isOpen])
 
   const handleNavClick = (href: string) => {
@@ -236,7 +252,7 @@ export default function CircularMenu({
                       const isHovered = hoveredIndex === index
                       return (
                         <motion.li
-                          key={item.href}
+                          key={item.number}
                           className="circular-menu__item"
                           initial={{ opacity: 0, x: 30, y: 6 }}
                           animate={{ opacity: 1, x: 0, y: 0 }}
