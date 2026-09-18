@@ -1,4 +1,4 @@
-﻿import { ArrowLeft, ArrowRight, Clock3, Compass, MapPin, Plane, Ship, Star, Waves } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Clock3, Compass, MapPin, Plane, Ship, Star, Waves } from 'lucide-react'
 import { FaInstagram } from 'react-icons/fa6'
 import CircularMenu from './components/ui/circular-menu'
 import { accommodations } from './data/accommodations'
@@ -375,10 +375,6 @@ function ExperiencePage() {
       {/* Boi People Showcase */}
       <div style={{ marginTop: '60px' }}>
         <BoiPeopleSection />
-      </div>
-
-      <div style={{ marginTop: '50px' }}>
-        <PartnersGrid />
       </div>
     </Shell>
   )

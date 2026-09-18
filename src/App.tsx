@@ -147,7 +147,7 @@ function AppContent() {
               </span>
             ))}
           </p>
-          <p className="hero-slogan"><span>{t.hero.slogan1}</span><span>{t.hero.slogan2}</span></p>
+          <p className="hero-slogan"><span>{t.hero.slogan2}</span></p>
           <a
             className="ticket"
             href={TICKETS}

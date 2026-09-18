@@ -358,7 +358,7 @@ export const translations: Record<Language, Translations> = {
         '7 dias em uma ilha paradisíaca na Bahia',
         'E aquela sensação rara de estar exatamente onde você queria estar',
       ],
-      slogan1: 'Ilha de Boipeba · Bahia',
+      slogan1: '',
       slogan2: 'Uma virada inesquecível',
       cta: 'Lavar a ALMA',
       scrollCueAria: 'Continuar',
@@ -438,9 +438,9 @@ export const translations: Record<Language, Translations> = {
     },
     accommodation: {
       kicker: 'PACOTE COMPLETO · 26/12 — 02/01',
-      h2Part1: 'Uma hospedagem',
-      h2Part2: 'pronta.',
-      subhead: 'Você só precisa chegar em Boipeba.',
+      h2Part1: 'Você só precisa',
+      h2Part2: 'chegar em Boipeba.',
+      subhead: '',
       p: 'Escolha onde ficar e viva os cinco dias de ALMA com ingresso + hospedagem em um único pacote.',
       benefits: {
         ac: 'AR-CONDICIONADO',
@@ -567,17 +567,17 @@ export const translations: Record<Language, Translations> = {
       h2Part2: 'OPEN FOOD, NÃO.',
       subtitle: 'Open Bar Premium em todas as festas. Comidas e lanches são vendidos separadamente na nossa praça gastronômica.',
       card1: {
-        title: 'NOVO FORMATO: PASSES CONSECUTIVOS',
-        text: 'Depois de um verão histórico, encerramos a venda de festas individuais para preservar a exclusividade do destino. Oferecemos opções de Pass de 5, 4, 3 ou 2 festas consecutivas (27 a 31/12). Única exceção: pacotes limitados virada + hospedagem (31/12 a 02/01) em quartos liberados por artistas.',
-        badge: 'Passes de 5, 4, 3 ou 2 Festas',
+        title: 'PASSES CONSECUTIVOS',
+        text: 'Passes de 5, 4, 3 ou 2 festas consecutivas (27 a 31/12). Encerramos as festas avulsas para preservar a exclusividade do destino. Exceção única: pacotes virada + hospedagem (31/12 a 02/01).',
+        badge: 'Exclusividade & Preservação',
       },
       card2: {
-        title: 'PAGAMENTO',
-        pixTitle: 'PIX À VISTA',
-        pixDiscount: '10% OFF DA TAXA',
-        pixDesc: 'Pagamento único: 1 pessoa realiza o PIX no valor total do grupo/quarto.',
-        ccTitle: 'CARTÃO DE CRÉDITO',
-        ccDesc: 'Via Sympla. Para grupos de 2–5 pessoas, cada integrante pode passar seu cartão no mesmo dia para garantir seu ingresso e sua vaga no quarto escolhido.',
+        title: 'OPEN BAR & PRACINHA',
+        pixTitle: 'OPEN BAR PREMIUM',
+        pixDiscount: 'INCLUSO',
+        pixDesc: 'Bebidas premium internacionais (Corona, Absolut, Beefeater, Sol, Red Bull e espumante Valduga).',
+        ccTitle: 'PRACINHA GASTRONÔMICA',
+        ccDesc: 'Comidinhas deliciosas e variadas à venda na nossa praça pé na areia durante todas as festas.',
       },
       card3: {
         title: 'CANAIS OFICIAIS',
@@ -590,10 +590,10 @@ export const translations: Record<Language, Translations> = {
       },
       card4: {
         title: 'MENOS LIXO = MAIS ANIMAIS',
-        p1: 'Distribuição de apenas 1 copo retornável e 1 pulseira por cliente para os 5 dias de festival, minimizando resíduos.',
-        p2: 'Coleta seletiva dos resíduos sólidos gerados com destinação responsável no continente pela Copa Engenharia Ambiental, e 100% das latinhas doadas para catadores locais.',
-        p3: 'Operação de limpeza da praia pós-evento na área usada e arredores, com compensação ambiental junto à Secretaria do Meio Ambiente de Cairu-BA.',
-        badge: 'Sustentabilidade & Preservação',
+        p1: '1 copo retornável e 1 pulseira para os 5 dias de festival, minimizando resíduos.',
+        p2: 'Coleta seletiva pela Copa Ambiental e 100% das latinhas doadas para catadores locais.',
+        p3: 'Limpeza completa pós-evento da praia e compensação ambiental oficial em Cairu-BA.',
+        badge: 'Preservação Ambiental',
       },
     },
     faq: {
@@ -603,7 +603,7 @@ export const translations: Record<Language, Translations> = {
       items: [
         {
           question: 'Onde e quando acontece o ALMA Réveillon 2027?',
-          answer: 'Na Praia da Cueira, em Cairu, Bahia, entre 27 e 31 de dezembro de 2026. A programação publicada começa às 23h nas quatro primeiras noites; no dia 31, às 22h.',
+          answer: 'Na Praia da Cueira, na Ilha de Boipeba, Bahia, entre 27 e 31 de dezembro de 2026. A programação publicada começa às 23h nas quatro primeiras noites; no dia 31, às 22h.',
         },
         {
           question: 'Qual é a programação?',
